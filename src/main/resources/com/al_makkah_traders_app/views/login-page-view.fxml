@@ -47,9 +47,14 @@
                     <PasswordField fx:id="passwordField" maxWidth="Infinity" onKeyPressed="#onPasswordFieldKeyPressed" promptText="Password" styleClass="text-field" stylesheets="@../stylesheets/style.css" />
                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onLoginButtonClick" styleClass="login-button" stylesheets="@../stylesheets/style.css" text="Login">
                         <VBox.margin>
-                            <Insets bottom="20.0" />
+                            <Insets />
                         </VBox.margin>
                     </Button>
+               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onForgetPassword" styleClass="login-button" stylesheets="@../stylesheets/style.css" text="Forget Password">
+                  <VBox.margin>
+                     <Insets top="10.0" />
+                  </VBox.margin>
+               </Button>
                 </VBox>
             </center>
         </BorderPane>

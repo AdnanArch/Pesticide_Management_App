@@ -4,6 +4,8 @@ import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.database.RestoreDatabase;
 import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.Dashboard;
+import com.al_makkah_traders_app.model.ForgetPassword;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -72,6 +74,22 @@ public class LoginController {
         Stage stage = new Stage();
         try {
             restoreDatabase.start(stage);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    private void onForgetPassword() {
+        ForgetPassword forgetPassword = new ForgetPassword();
+        Stage stage = new Stage();
+        try {
+            // Start the forget password stage.
+            forgetPassword.start(stage);
+
+            // Close the login page.
+            Stage loginStage = (Stage) usernameTextField.getScene().getWindow();
+            loginStage.close();
         }catch (Exception e){
             throw new RuntimeException(e);
         }

@@ -4,13 +4,11 @@ import com.al_makkah_traders_app.model.*;
 import com.al_makkah_traders_app.utility.BillCreationResult;
 import com.al_makkah_traders_app.utility.NumberFormatter;
 import com.al_makkah_traders_app.utility.Utility;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
@@ -2105,5 +2103,45 @@ public class DatabaseOperations {
         }
 
         return companyTransactionsList;
+    }
+
+    public static String getSoftwarePassword() {
+        String password = null;
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            CallableStatement statement = db.getConnection().prepareCall("CALL sp_get_software_password()");
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                password = resultSet.getString("password");
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while fetching software password from database {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while fetching software password from database.{}", e.getMessage(),
+                    e);
+        }
+        return password;
+    }
+
+    public static boolean updatePassword(String newPassword) {
+        boolean result = false;
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            CallableStatement statement = db.getConnection().prepareCall("CALL sp_update_software_password(?, ?)");
+
+            statement.setString(1, newPassword);
+            statement.registerOutParameter(2, Types.BOOLEAN);
+
+            statement.execute();
+
+            result = statement.getBoolean(2);
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while updating software password in database {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while updating software password in database.{}", e.getMessage(),
+                    e);
+        }
+        return result;
     }
 }

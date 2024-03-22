@@ -1,0 +1,23 @@
+.urdu_main_label, .urdu_sub_label{
+    -fx-font-family: "Jameel Noori Nastaleeq";
+}
+
+.urdu_main_label {
+    -fx-font-size: 40px;
+}
+
+.urdu_sub_label{
+    -fx-font-size: 32px;
+}
+
+.heading_label{
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.companyName_label{
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+}

@@ -5,6 +5,7 @@ import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.AccountHolder;
 import com.al_makkah_traders_app.model.ImportAccountHoldersData;
 import com.al_makkah_traders_app.model.MaskedTextField;
+import com.al_makkah_traders_app.utility.Utility;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -17,6 +18,8 @@ import javafx.stage.Stage;
  * Controller for adding, updating, and deleting account holders.
  */
 public class AddNewAccountHolderController {
+    @FXML
+    private TextField balanceTextField;
     @FXML
     private TableView<AccountHolder> accountHolderTableView;
     @FXML
@@ -74,6 +77,7 @@ public class AddNewAccountHolderController {
         addressTextField.setText(selectedAccountHolder.getAddress());
         phoneTextField.setText(selectedAccountHolder.getPhone());
         wholesalerCheck.setSelected(selectedAccountHolder.isRetailerProperty().get());
+        balanceTextField.setText(selectedAccountHolder.getTotalBalance());
     }
 
     @FXML
@@ -83,11 +87,12 @@ public class AddNewAccountHolderController {
         String address = addressTextField.getText();
         String phone = phoneTextField.getText();
         boolean isRetailer = wholesalerCheck.isSelected();
+        String balance = balanceTextField.getText();
 
-        boolean isValid = checkDataValidity(name, cnic, address, phone);
+        boolean isValid = checkDataValidity(name, cnic, address, phone, balance);
 
         if (isValid) {
-            boolean added = DatabaseOperations.createAccountHolder(name, cnic, address, phone, isRetailer);
+            boolean added = DatabaseOperations.createAccountHolder(name, cnic, address, phone, isRetailer, balance);
 
             if (added) {
                 MessageDialogs.showMessageDialog("Account holder has been added successfully.");
@@ -99,7 +104,7 @@ public class AddNewAccountHolderController {
         }
     }
 
-    private boolean checkDataValidity(String name, String cnic, String address, String phone) {
+    private boolean checkDataValidity(String name, String cnic, String address, String phone, String balance) {
         if (name.isEmpty()) {
             MessageDialogs.showErrorMessage("Please enter Account Holder name.");
             return false;
@@ -111,6 +116,9 @@ public class AddNewAccountHolderController {
             return false;
         } else if (phone.isEmpty()) {
             MessageDialogs.showErrorMessage("Please enter phone number of the account holder.");
+            return false;
+        }else if(!Utility.isNumeric(balance)){
+            MessageDialogs.showErrorMessage("Please enter a valid balance.");
             return false;
         }
         return true;
@@ -171,15 +179,16 @@ public class AddNewAccountHolderController {
         String address = addressTextField.getText().trim();
         String phone = phoneTextField.getText().trim();
         boolean isRetailer = wholesalerCheck.isSelected();
+        String balance = balanceTextField.getText();
 
-        boolean isValid = checkDataValidity(name, cnic, address, phone);
+        boolean isValid = checkDataValidity(name, cnic, address, phone, balance);
 
         if (isValid) {
             boolean confirmed = MessageDialogs
                     .showConfirmationDialog("Are you sure you want to update this account holder's data?");
 
             if (confirmed) {
-                boolean updated = DatabaseOperations.updateAccountHolderInfo(name, cnic, address, phone, isRetailer);
+                boolean updated = DatabaseOperations.updateAccountHolderInfo(name, cnic, address, phone, isRetailer, balance);
 
                 if (updated) {
                     MessageDialogs.showMessageDialog("Account Holder's data is successfully updated.");
@@ -200,5 +209,6 @@ public class AddNewAccountHolderController {
         addressTextField.clear();
         phoneTextField.clear();
         wholesalerCheck.setSelected(false);
+        balanceTextField.clear();
     }
 }

@@ -15,7 +15,7 @@ public class AccountHolder extends Application {
     private final SimpleStringProperty phone;
     private final SimpleBooleanProperty isRetailer;
     private SimpleStringProperty debitOrCredit;
-    private final SimpleDoubleProperty totalBalance;
+    private final SimpleStringProperty totalBalance;
 
     public AccountHolder() {
         this.name = new SimpleStringProperty("");
@@ -23,17 +23,17 @@ public class AccountHolder extends Application {
         this.address = new SimpleStringProperty("");
         this.phone = new SimpleStringProperty("");
         this.isRetailer = new SimpleBooleanProperty(false);
-        this.totalBalance = new SimpleDoubleProperty(0.0);
+        this.totalBalance = new SimpleStringProperty("");
     }
 
     public AccountHolder(String name, String cnicNo, String address, String phone, String debitOrCredit,
-            double totalBalance, boolean isRetailer) {
+            String totalBalance, boolean isRetailer) {
         this.name = new SimpleStringProperty(name);
         this.cnicNo = new SimpleStringProperty(cnicNo);
         this.address = new SimpleStringProperty(address);
         this.phone = new SimpleStringProperty(phone);
         this.debitOrCredit = new SimpleStringProperty(debitOrCredit);
-        this.totalBalance = new SimpleDoubleProperty(totalBalance);
+        this.totalBalance = new SimpleStringProperty(totalBalance);
         this.isRetailer = new SimpleBooleanProperty(isRetailer);
     }
 
@@ -119,15 +119,15 @@ public class AccountHolder extends Application {
         return debitOrCredit;
     }
 
-    public double getTotalBalance() {
+    public String getTotalBalance() {
         return totalBalance.get();
     }
 
-    public void setTotalBalance(double totalBalance) {
+    public void setTotalBalance(String totalBalance) {
         this.totalBalance.set(totalBalance);
     }
 
-    public SimpleDoubleProperty totalBalanceProperty() {
+    public SimpleStringProperty totalBalanceProperty() {
         return totalBalance;
     }
 }

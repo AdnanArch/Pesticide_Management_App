@@ -2,6 +2,7 @@ package com.al_makkah_traders_app.database;
 
 import com.al_makkah_traders_app.model.*;
 import com.al_makkah_traders_app.utility.BillCreationResult;
+import com.al_makkah_traders_app.utility.DateFormatter;
 import com.al_makkah_traders_app.utility.NumberFormatter;
 import com.al_makkah_traders_app.utility.Utility;
 import javafx.collections.FXCollections;
@@ -306,21 +307,22 @@ public class DatabaseOperations {
      * @return A message indicating the result of the operation.
      */
     public static boolean createAccountHolder(String name, String cnic, String address, String phone,
-                                              boolean isRetailer) {
+                                              boolean isRetailer, String balance) {
         try {
             DatabaseConnection db = new DatabaseConnection();
             CallableStatement statement = db.getConnection()
-                    .prepareCall("CALL sp_create_account_holder(?, ?, ?, ?, ?, ?)");
+                    .prepareCall("CALL sp_create_account_holder(?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, name);
             statement.setBigDecimal(2, BigDecimal.valueOf(Long.parseLong(cnic)));
             statement.setString(3, address);
             statement.setString(4, phone);
             statement.setBoolean(5, isRetailer);
-            statement.registerOutParameter(6, Types.BOOLEAN);
+            statement.setDouble(6, Double.parseDouble(balance));
+            statement.registerOutParameter(7, Types.BOOLEAN);
 
             statement.execute();
 
-            boolean success = statement.getBoolean(6);
+            boolean success = statement.getBoolean(7);
 
             statement.close();
             db.close();
@@ -353,21 +355,22 @@ public class DatabaseOperations {
      * @return True if the update was successful, otherwise false.
      */
     public static boolean updateAccountHolderInfo(String name, String cnic, String address, String contact,
-                                                  boolean isWholesaler) {
+                                                  boolean isWholesaler, String balance) {
         try {
             DatabaseConnection db = new DatabaseConnection();
             CallableStatement statement = db.getConnection()
-                    .prepareCall("CALL sp_update_account_holder_info(?, ?, ?, ?, ?, ?)");
+                    .prepareCall("CALL sp_update_account_holder_info(?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, name);
             statement.setBigDecimal(2, BigDecimal.valueOf(Long.parseLong(cnic)));
             statement.setString(3, address);
             statement.setString(4, contact);
             statement.setBoolean(5, isWholesaler);
-            statement.registerOutParameter(6, Types.BOOLEAN);
+            statement.setDouble(6, Double.parseDouble(balance));
+            statement.registerOutParameter(7, Types.BOOLEAN);
 
             statement.execute();
 
-            boolean updated = statement.getBoolean(6);
+            boolean updated = statement.getBoolean(7);
 
             statement.close();
             db.close();
@@ -445,7 +448,17 @@ public class DatabaseOperations {
                 double balance = resultSet.getDouble("balance");
                 boolean isRetailer = resultSet.getBoolean("is_retailer");
                 // Add each row to the ObservableList
-                accountHoldersData.add(new AccountHolder(name, cnicNo, address, contact, type, balance, isRetailer));
+                accountHoldersData.add(
+                        new AccountHolder(
+                                name,
+                                cnicNo,
+                                address,
+                                contact,
+                                type,
+                                NumberFormatter.formatWithCommas(balance),
+                                isRetailer
+                        )
+                );
             }
 
             statement.close();
@@ -484,7 +497,8 @@ public class DatabaseOperations {
                 statement.setString(3, accountHolder.getAddress());
                 statement.setString(4, accountHolder.getPhone());
                 statement.setBoolean(5, accountHolder.isRetailer()); // corrected method name
-                statement.setDouble(6, accountHolder.getTotalBalance());
+                String balance = accountHolder.getTotalBalance();
+                statement.setDouble(6, NumberFormatter.removeCommas(balance));
 
                 statement.registerOutParameter(7, Types.BOOLEAN);
 
@@ -1541,7 +1555,7 @@ public class DatabaseOperations {
                 String description = resultSet.getString("payment_description");
                 float amount = resultSet.getFloat("amount");
 
-                miscellaneousPayments.add(new MiscellaneousPayments(description, amount));
+                miscellaneousPayments.add(new MiscellaneousPayments(description, NumberFormatter.formatWithCommas(amount)));
             }
         } catch (SQLException e) {
             logger.error("SQL Exception occurred while fetching miscellaneous payments from database {}",
@@ -1879,7 +1893,7 @@ public class DatabaseOperations {
                 double quantity = resultSet.getDouble("quantity");
                 String orderedFrom = resultSet.getString("ordered_from");
 
-                stockArrivalRecords.add(new StockArrivalRecord(productName, quantity, orderedFrom));
+                stockArrivalRecords.add(new StockArrivalRecord(productName, NumberFormatter.formatWithCommas(quantity), orderedFrom));
             }
         } catch (SQLException e) {
             logger.error("SQL Exception occurred while fetching today's stock arrivals from database {}", e.getMessage(),
@@ -1903,12 +1917,12 @@ public class DatabaseOperations {
 
             while (resultSet.next()) {
                 String productName = resultSet.getString("product_name");
-                float quantity = resultSet.getFloat("quantity");
+                double quantity = resultSet.getFloat("quantity");
                 String customerName = resultSet.getString("customer_name");
                 String paymentType = resultSet.getString("payment_type");
                 double amount = resultSet.getDouble("amount");
 
-                salesRecords.add(new SalesRecord(productName, quantity, customerName, paymentType, amount));
+                salesRecords.add(new SalesRecord(productName, NumberFormatter.formatWithCommas(quantity), customerName, paymentType, NumberFormatter.formatWithCommas(amount)));
             }
         } catch (SQLException e) {
             logger.error("SQL Exception occurred while fetching today's sales from database {}", e.getMessage(), e);
@@ -2030,13 +2044,21 @@ public class DatabaseOperations {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String date = resultSet.getString("t_date");
+                LocalDate date = resultSet.getDate("t_date").toLocalDate();
                 String description = resultSet.getString("trans_description");
                 double debit = resultSet.getDouble("debit");
                 double credit = resultSet.getDouble("credit");
                 double balance = resultSet.getDouble("balance");
 
-                debitCreditObservableList.add(new DebitCredit(date, debit, credit, balance, description));
+                debitCreditObservableList.add(
+                        new DebitCredit(
+                                DateFormatter.formatDate(date),
+                                NumberFormatter.formatWithCommas(debit),
+                                NumberFormatter.formatWithCommas(credit),
+                                NumberFormatter.formatWithCommas(balance),
+                                description
+                        )
+                );
             }
         } catch (SQLException e) {
             logger.error("SQL Exception occurred while fetching debit credit report from database {}", e.getMessage(), e);
@@ -2058,13 +2080,21 @@ public class DatabaseOperations {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String date = resultSet.getString("t_date");
+                LocalDate date = resultSet.getDate("t_date").toLocalDate();
                 String description = resultSet.getString("trans_description");
                 double debit = resultSet.getDouble("debit");
                 double credit = resultSet.getDouble("credit");
                 double balance = resultSet.getDouble("balance");
 
-                debitCreditObservableList.add(new DebitCredit(date, debit, credit, balance, description));
+                debitCreditObservableList.add(
+                        new DebitCredit(
+                                DateFormatter.formatDate(date),
+                                NumberFormatter.formatWithCommas(debit),
+                                NumberFormatter.formatWithCommas(credit),
+                                NumberFormatter.formatWithCommas(balance),
+                                description
+                        )
+                );
             }
         } catch (SQLException e) {
             logger.error("SQL Exception occurred while fetching debit credit report from database {}", e.getMessage(), e);
@@ -2086,13 +2116,21 @@ public class DatabaseOperations {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String date = resultSet.getString("t_date");
+                LocalDate date = resultSet.getDate("t_date").toLocalDate();
                 String description = resultSet.getString("trans_description");
                 double debit = resultSet.getDouble("debit");
                 double credit = resultSet.getDouble("credit");
                 double balance = resultSet.getDouble("balance");
 
-                companyTransactionsList.add(new CompanyTransaction(date, description, credit, debit, balance));
+                companyTransactionsList.add(
+                        new CompanyTransaction(
+                                DateFormatter.formatDate(date),
+                                description,
+                                NumberFormatter.formatWithCommas(credit),
+                                NumberFormatter.formatWithCommas(debit),
+                                NumberFormatter.formatWithCommas(balance)
+                        )
+                );
             }
 
         } catch (SQLException e) {

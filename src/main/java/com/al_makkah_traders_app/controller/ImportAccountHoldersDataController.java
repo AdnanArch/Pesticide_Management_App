@@ -88,7 +88,7 @@ public class ImportAccountHoldersDataController {
                     accountHolder.setisRetailer(row.getCell(4).getBooleanCellValue());
                 }
                 if (row.getCell(5) != null) {
-                    accountHolder.setTotalBalance(row.getCell(5).getNumericCellValue());
+                    accountHolder.setTotalBalance(String.valueOf(row.getCell(5).getNumericCellValue()));
                 }
 
                 // Set other properties as needed

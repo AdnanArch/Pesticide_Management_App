@@ -4,6 +4,7 @@ import com.al_makkah_traders_app.database.DatabaseBackup;
 import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.*;
+import com.al_makkah_traders_app.utility.DateFormatter;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,27 +36,29 @@ public class DashBoardController {
         dateTextField.setValue(LocalDate.now());
 
         // Format the date in dd-mm-yyyy format
-        StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//        StringConverter<LocalDate> converter = new StringConverter<>() {
+//            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        };
 
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        };
+        StringConverter<LocalDate> converter = DateFormatter.getDateStringConverter();
 
         // Set the custom converter to the dateTextField
         dateTextField.setConverter(converter);
@@ -66,11 +68,8 @@ public class DashBoardController {
         // Initialize the scheduler to refresh data every 2 minutes
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(() -> {
-            // Get the current date
-            LocalDate currentDate = LocalDate.now();
-
             // Refresh the data on the dashboard
-            Platform.runLater(() -> populateTodayDashboard(currentDate));
+            Platform.runLater(() -> populateTodayDashboard(dateTextField.getValue()));
         }, 0, 2, TimeUnit.MINUTES);
 
         Platform.runLater(() -> {

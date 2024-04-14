@@ -10,4 +10,12 @@ public class NumberFormatter {
         // Format the number
         return decimalFormat.format(number);
     }
+
+    public static double removeCommas(String numberString) {
+        // Remove commas from the string
+        String cleanedString = numberString.replace(",", "");
+
+        // Parse the cleaned string as a double
+        return Double.parseDouble(cleanedString);
+    }
 }

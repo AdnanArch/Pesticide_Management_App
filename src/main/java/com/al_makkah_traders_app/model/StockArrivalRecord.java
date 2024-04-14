@@ -6,12 +6,12 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class StockArrivalRecord {
     private final SimpleStringProperty productName;
-    private final SimpleDoubleProperty quantity;
+    private final SimpleStringProperty quantity;
     private final SimpleStringProperty from;
 
-    public StockArrivalRecord(String productName, double quantity, String from) {
+    public StockArrivalRecord(String productName, String quantity, String from) {
         this.productName = new SimpleStringProperty(productName);
-        this.quantity = new SimpleDoubleProperty(quantity);
+        this.quantity = new SimpleStringProperty(quantity);
         this.from = new SimpleStringProperty(from);
     }
 
@@ -27,15 +27,15 @@ public class StockArrivalRecord {
         this.productName.set(productName);
     }
 
-    public double getQuantity() {
+    public String getQuantity() {
         return quantity.get();
     }
 
-    public SimpleDoubleProperty quantityProperty() {
+    public SimpleStringProperty quantityProperty() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(String quantity) {
         this.quantity.set(quantity);
     }
 

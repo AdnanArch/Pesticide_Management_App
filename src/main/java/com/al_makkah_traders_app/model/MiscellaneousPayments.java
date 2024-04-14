@@ -9,16 +9,16 @@ import javafx.stage.Stage;
 
 public class MiscellaneousPayments extends Application {
     private final SimpleStringProperty description;
-    private final SimpleDoubleProperty amount;
+    private final SimpleStringProperty amount;
 
     public MiscellaneousPayments() {
         this.description = new SimpleStringProperty("");
-        this.amount = new SimpleDoubleProperty(0);
+        this.amount = new SimpleStringProperty("0");
     }
 
-    public MiscellaneousPayments(String description, float amount) {
+    public MiscellaneousPayments(String description, String amount) {
         this.description = new SimpleStringProperty(description);
-        this.amount = new SimpleDoubleProperty(amount);
+        this.amount = new SimpleStringProperty(amount);
     }
 
     public String getDescription() {
@@ -33,15 +33,15 @@ public class MiscellaneousPayments extends Application {
         return description;
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount.get();
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(String amount) {
         this.amount.set(amount);
     }
 
-    public SimpleDoubleProperty amountProperty() {
+    public SimpleStringProperty amountProperty() {
         return amount;
     }
 

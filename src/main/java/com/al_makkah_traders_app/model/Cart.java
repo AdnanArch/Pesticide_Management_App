@@ -7,18 +7,18 @@ public class Cart {
     private final SimpleStringProperty productCode;
     private final SimpleStringProperty productName;
     private final SimpleStringProperty brandName;
-    private final SimpleDoubleProperty quantity;
-    private final SimpleDoubleProperty pricePerUnit;
-    private final SimpleDoubleProperty totalPrice;
+    private final SimpleStringProperty quantity;
+    private final SimpleStringProperty pricePerUnit;
+    private final SimpleStringProperty totalPrice;
 
-    public Cart(String productCode, String productName, String brandName, double quantity, double pricePerUnit,
-            double totalPrice) {
+    public Cart(String productCode, String productName, String brandName, String quantity, String pricePerUnit,
+            String totalPrice) {
         this.productCode = new SimpleStringProperty(productCode);
         this.productName = new SimpleStringProperty(productName);
         this.brandName = new SimpleStringProperty(brandName);
-        this.quantity = new SimpleDoubleProperty(quantity);
-        this.pricePerUnit = new SimpleDoubleProperty(pricePerUnit);
-        this.totalPrice = new SimpleDoubleProperty(totalPrice);
+        this.quantity = new SimpleStringProperty(quantity);
+        this.pricePerUnit = new SimpleStringProperty(pricePerUnit);
+        this.totalPrice = new SimpleStringProperty(totalPrice);
     }
 
     public String getProductCode() {
@@ -57,39 +57,39 @@ public class Cart {
         return brandName;
     }
 
-    public double getQuantity() {
+    public String getQuantity() {
         return quantity.get();
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(String quantity) {
         this.quantity.set(quantity);
     }
 
-    public SimpleDoubleProperty quantityProperty() {
+    public SimpleStringProperty quantityProperty() {
         return quantity;
     }
 
-    public double getPricePerUnit() {
+    public String getPricePerUnit() {
         return pricePerUnit.get();
     }
 
-    public void setPricePerUnit(double pricePerUnit) {
+    public void setPricePerUnit(String pricePerUnit) {
         this.pricePerUnit.set(pricePerUnit);
     }
 
-    public SimpleDoubleProperty pricePerUnitProperty() {
+    public SimpleStringProperty pricePerUnitProperty() {
         return pricePerUnit;
     }
 
-    public double getTotalPrice() {
+    public String getTotalPrice() {
         return totalPrice.get();
     }
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(String totalPrice) {
         this.totalPrice.set(totalPrice);
     }
 
-    public SimpleDoubleProperty totalPriceProperty() {
+    public SimpleStringProperty totalPriceProperty() {
         return totalPrice;
     }
 }

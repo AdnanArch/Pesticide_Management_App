@@ -48,13 +48,8 @@ public class CompanyAccountController {
     }
 
     public void populateCompanyAccountsTable() {
-        // Call a method in the DatabaseOperations class to retrieve the company account
-        // data
+        // Call a method in the DatabaseOperations class to retrieve the company account data
         ObservableList<CompanyAccount> accountData = DatabaseOperations.getAllCompanyAccounts();
-        for(CompanyAccount p : accountData){
-            System.out.println(p.getAccountNo());
-            System.out.println(p.getTotalBalance());
-        }
         // Set the retrieved data in the TableView
         compnayAccountsTableView.setItems(accountData);
     }

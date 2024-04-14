@@ -5,6 +5,8 @@ import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.utility.BillCreationResult;
 import com.al_makkah_traders_app.utility.BillPrinter;
 import com.al_makkah_traders_app.utility.Utility;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -12,8 +14,11 @@ import javafx.scene.control.TextField;
 import org.controlsfx.control.SearchableComboBox;
 
 import java.math.BigInteger;
+import java.util.Objects;
 
 public class EmptyBillController {
+    @FXML
+    private SearchableComboBox<String> paymentOptionsComboBox;
     @FXML
     private TextField netBalanceTextField, previousBalanceTextField, amountTextField;
 
@@ -38,12 +43,32 @@ public class EmptyBillController {
 
     private void populateComboBoxes() {
         accountHolderComboBox.setItems(DatabaseOperations.getAccountHolderNames());
-        paymentTypeComboBox.setItems(DatabaseOperations.getCompanyBankAccounts());
+//        paymentTypeComboBox.setItems(DatabaseOperations.getCompanyBankAccounts());
+        ObservableList<String> paymentMethods = FXCollections.observableArrayList();
+        paymentMethods.addAll("Cash", "Cheque", "Online");
+        paymentOptionsComboBox.setItems(paymentMethods);
     }
 
     private void setListeners() {
         amountTextField.textProperty().addListener((observable, oldValue, newValue) -> calculateAndSetNetBalance());
         accountHolderComboBox.valueProperty().addListener((observable, oldValue, newValue) -> populatePreviousBalance(newValue));
+        paymentOptionsComboBox.valueProperty().addListener(((observable, oldValue, newValue) -> populatePaymentMethodsComboBox(newValue)));
+    }
+
+    private void populatePaymentMethodsComboBox(String paymentOption){
+        // Check if the paymentOption is null, and if so, return without further processing
+        if (paymentOption == null) {
+            return;
+        }
+        System.out.println(paymentOption);
+        if (paymentOption.equals("Cash")){
+            paymentTypeComboBox.setDisable(true);
+        } else {
+            paymentTypeComboBox.setDisable(false);
+            ObservableList<String> bankAccounts = DatabaseOperations.getCompanyBankAccounts();
+            bankAccounts.removeIf(s -> Objects.equals(s, "0000-000000 -> CASH (DAY BOOK)"));
+            paymentTypeComboBox.setItems(bankAccounts);
+        }
     }
 
     private void calculateAndSetNetBalance() {
@@ -78,9 +103,16 @@ public class EmptyBillController {
     }
 
     private boolean checkAllFieldsFilled() {
-        if (accountHolderComboBox.getValue().isEmpty() || paymentTypeComboBox.getValue().isEmpty() || billTypeComboBox.getValue().isEmpty() ||
-                amountTextField.getText().isEmpty() || !Utility.isNumeric(amountTextField.getText()) || Double.parseDouble(amountTextField.getText()) <= 0 ||
-                descriptionArea.getText().isEmpty() || descriptionArea == null) {
+        if (accountHolderComboBox.getValue().isEmpty() ||
+                paymentTypeComboBox.getValue() == null ||
+                paymentTypeComboBox.getValue().isEmpty() ||
+                billTypeComboBox.getValue().isEmpty() ||
+                amountTextField.getText().isEmpty() ||
+                !Utility.isNumeric(amountTextField.getText()) ||
+                Double.parseDouble(amountTextField.getText()) <= 0 ||
+                descriptionArea == null ||
+                descriptionArea.getText().isEmpty()
+        ) {
             MessageDialogs.showWarningMessage("Please fill in all fields correctly");
             return true;
         }
@@ -88,13 +120,29 @@ public class EmptyBillController {
     }
 
     private boolean insertBillAndPrintReceipt() {
+        String accountNo;
+        String paymentOption = paymentOptionsComboBox.getValue();
         String paymentMethod = paymentTypeComboBox.getValue();
+        if (paymentOption.equals("Cash")){
+            accountNo = "0000-000000";
+        }else{
+            accountNo = Utility.extractAccountNumber(paymentMethod);
+        }
+
         String paymentType = "Deposit Cash".equals(billTypeComboBox.getValue()) ? "credit" : "debit";
-        String accountNo = paymentMethod.endsWith("Cash") ? "0000-000000" : Utility.extractAccountNumber(paymentMethod);
+//        accountNo = paymentMethod.endsWith("Cash") ? "0000-000000" : Utility.extractAccountNumber(paymentMethod);
+
         double amount = Double.parseDouble(amountTextField.getText());
         String description = descriptionArea.getText();
 
-        BillCreationResult isInserted = DatabaseOperations.insertEmptyBill(holderNo, accountNo, amount, description, paymentType);
+        String paymentStatus;
+        if (paymentOptionsComboBox.getValue().equals("Cheque")) {
+            paymentStatus = "Pending";
+        }else{
+            paymentStatus = "Completed";
+        }
+
+        BillCreationResult isInserted = DatabaseOperations.insertEmptyBill(holderNo, accountNo, amount, description, paymentType, paymentStatus);
         if (isInserted.isSuccess()) {
             MessageDialogs.showMessageDialog("Bill inserted successfully");
             printReceipt(isInserted.getBillId());
@@ -113,7 +161,15 @@ public class EmptyBillController {
         double amount = Double.parseDouble(amountTextField.getText());
         String description = descriptionArea.getText();
 
-        BillCreationResult isInserted = DatabaseOperations.insertEmptyBill(holderNo, accountNo, amount, description, paymentType);
+        String paymentStatus;
+        if (paymentOptionsComboBox.getValue().equals("Cheque")) {
+            paymentStatus = "Pending";
+        }else{
+            paymentStatus = "Completed";
+        }
+
+        BillCreationResult isInserted = DatabaseOperations.insertEmptyBill(holderNo, accountNo, amount, description, paymentType, paymentStatus);
+
         if (isInserted.isSuccess()) {
             MessageDialogs.showMessageDialog("Bill inserted successfully");
             clearInputFields();

@@ -23,6 +23,13 @@ public class CompanyAccount extends Application {
         this.totalBalance = new SimpleStringProperty(totalBalance);
     }
 
+    public CompanyAccount(String accountHolderName, String bankName, String totalBalance) {
+        this.accountHolderName = new SimpleStringProperty(accountHolderName);
+        this.bankName = new SimpleStringProperty(bankName);
+        this.totalBalance = new SimpleStringProperty(totalBalance);
+        this.accountNo = new SimpleStringProperty("");
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(AccountHolderBill.class

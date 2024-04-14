@@ -10,20 +10,20 @@ import javafx.stage.Stage;
 public class CompanyTransaction extends Application {
     private SimpleStringProperty date;
     private SimpleStringProperty description;
-    private SimpleDoubleProperty credit;
-    private SimpleDoubleProperty debit;
-    private SimpleDoubleProperty balance;
+    private SimpleStringProperty credit;
+    private SimpleStringProperty debit;
+    private SimpleStringProperty balance;
 
     public CompanyTransaction(){
 
     }
 
-    public CompanyTransaction(String date, String description, double credit, double debit, double balance){
+    public CompanyTransaction(String date, String description, String credit, String debit, String balance){
         this.date = new SimpleStringProperty(date);
         this.description = new SimpleStringProperty(description);
-        this.credit = new SimpleDoubleProperty(credit);
-        this.debit = new SimpleDoubleProperty(debit);
-        this.balance = new SimpleDoubleProperty(balance);
+        this.credit = new SimpleStringProperty(credit);
+        this.debit = new SimpleStringProperty(debit);
+        this.balance = new SimpleStringProperty(balance);
     }
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -59,39 +59,39 @@ public class CompanyTransaction extends Application {
         this.description.set(description);
     }
 
-    public double getCredit() {
+    public String getCredit() {
         return credit.get();
     }
 
-    public SimpleDoubleProperty creditProperty() {
+    public SimpleStringProperty creditProperty() {
         return credit;
     }
 
-    public void setCredit(double credit) {
+    public void setCredit(String credit) {
         this.credit.set(credit);
     }
 
-    public double getDebit() {
+    public String getDebit() {
         return debit.get();
     }
 
-    public SimpleDoubleProperty debitProperty() {
+    public SimpleStringProperty debitProperty() {
         return debit;
     }
 
-    public void setDebit(double debit) {
+    public void setDebit(String debit) {
         this.debit.set(debit);
     }
 
-    public double getBalance() {
+    public String getBalance() {
         return balance.get();
     }
 
-    public SimpleDoubleProperty balanceProperty() {
+    public SimpleStringProperty balanceProperty() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(String balance) {
         this.balance.set(balance);
     }
 }

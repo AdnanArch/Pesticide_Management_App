@@ -37,6 +37,16 @@ public class AccountHolder extends Application {
         this.isRetailer = new SimpleBooleanProperty(isRetailer);
     }
 
+    public AccountHolder(String name, String debitOrCredit, String totalBalance, boolean isRetailer) {
+        this.name = new SimpleStringProperty(name);
+        this.debitOrCredit = new SimpleStringProperty(debitOrCredit);
+        this.totalBalance = new SimpleStringProperty(totalBalance);
+        this.cnicNo = new SimpleStringProperty("");
+        this.address = new SimpleStringProperty("");
+        this.phone = new SimpleStringProperty("");
+        this.isRetailer = new SimpleBooleanProperty(isRetailer);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(

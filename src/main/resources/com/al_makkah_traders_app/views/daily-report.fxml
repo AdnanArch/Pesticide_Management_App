@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" spacing="20.0" styleClass="left-form" stylesheets="@../stylesheets/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.al_makkah_traders_app.controller.DailyReportController">
+<VBox alignment="TOP_CENTER" prefHeight="554.0" prefWidth="734.0" spacing="20.0" styleClass="left-form" stylesheets="@../stylesheets/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.al_makkah_traders_app.controller.DailyReportController">
     <VBox alignment="TOP_CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
         <VBox.margin>
             <Insets bottom="10.0" left="20.0" right="20.0" />
@@ -65,17 +65,17 @@
                             <columns>
                                 <TableColumn prefWidth="75.0" text="Name">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="description" />
+                                        <PropertyValueFactory property="name" />
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn prefWidth="75.0" text="Credit">
+                                <TableColumn prefWidth="75.0" text="Debit/Credit">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="credit" />
+                                        <PropertyValueFactory property="debitOrCredit" />
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn prefWidth="75.0" text="Debit">
+                                <TableColumn prefWidth="75.0" text="Balance">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="debit" />
+                                        <PropertyValueFactory property="totalBalance" />
                                     </cellValueFactory>
                                 </TableColumn>
                             </columns>
@@ -88,26 +88,31 @@
                                 <Font name="Berlin Sans FB Demi Bold" size="25.0" />
                             </font>
                         </Label>
-                        <TableView fx:id="debitCreditTableView1" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS">
+                        <TableView fx:id="bookingsTableView" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn prefWidth="75.0" text="Company">
+                                <TableColumn prefWidth="75.0" text="Ordered From">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="description" />
+                                        <PropertyValueFactory property="orderedFrom" />
                                     </cellValueFactory>
                                 </TableColumn>
                                 <TableColumn prefWidth="75.0" text="Product">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="credit" />
+                                        <PropertyValueFactory property="productCode" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn prefWidth="75.0" text="Booking Type">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="bookingType" />
                                     </cellValueFactory>
                                 </TableColumn>
                                 <TableColumn prefWidth="75.0" text="O. Q">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="debit" />
+                                        <PropertyValueFactory property="orderedQuantity" />
                                     </cellValueFactory>
                                 </TableColumn>
                                 <TableColumn prefWidth="75.0" text="L. Q">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="debit" />
+                                        <PropertyValueFactory property="leftQuantity" />
                                     </cellValueFactory>
                                 </TableColumn>
                             </columns>
@@ -120,21 +125,26 @@
                                 <Font name="Berlin Sans FB Demi Bold" size="25.0" />
                             </font>
                         </Label>
-                        <TableView fx:id="debitCreditTableView11" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+                        <TableView fx:id="stockTableView" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn prefWidth="75.0" text="Name">
+                                <TableColumn prefWidth="75.0" text="Product Code">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="description" />
+                                        <PropertyValueFactory property="productCode" />
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn prefWidth="75.0" text="Shop">
+                                <TableColumn prefWidth="75.0" text="Product Name">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="credit" />
+                                        <PropertyValueFactory property="productName" />
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn prefWidth="75.0" text="Warehouse">
+                                <TableColumn prefWidth="75.0" text="Shop. Q">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="debit" />
+                                        <PropertyValueFactory property="shopQuantity" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn prefWidth="75.0" text="Warehouse. Q">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="warehouseQuantity" />
                                     </cellValueFactory>
                                 </TableColumn>
                             </columns>
@@ -147,21 +157,21 @@
                                 <Font name="Berlin Sans FB Demi Bold" size="25.0" />
                             </font>
                         </Label>
-                        <TableView fx:id="debitCreditTableView111" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.vgrow="ALWAYS">
+                        <TableView fx:id="bankBalanceTableView" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn prefWidth="75.0" text="Account No">
+                                <TableColumn prefWidth="75.0" text="Bank Name">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="description" />
+                                        <PropertyValueFactory property="bankName" />
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn prefWidth="75.0" text="Name">
+                                <TableColumn prefWidth="75.0" text="Account Name">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="credit" />
+                                        <PropertyValueFactory property="accountHolderName" />
                                     </cellValueFactory>
                                 </TableColumn>
                                 <TableColumn prefWidth="75.0" text="Balance">
                                     <cellValueFactory>
-                                        <PropertyValueFactory property="debit" />
+                                        <PropertyValueFactory property="totalBalance" />
                                     </cellValueFactory>
                                 </TableColumn>
                             </columns>
@@ -170,13 +180,13 @@
                             </columnResizePolicy>
                         </TableView>
                     </children>
-               <VBox.margin>
-                  <Insets left="20.0" right="20.0" />
-               </VBox.margin>
+                    <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                    </VBox.margin>
                 </GridPane>
                 <HBox alignment="CENTER_RIGHT">
                     <children>
-                        <Button mnemonicParsing="false" text="Print Report" />
+                        <Button mnemonicParsing="false" onAction="#onPrintReport" text="Print Report" />
                     </children>
                     <VBox.margin>
                         <Insets right="20.0" top="10.0" />

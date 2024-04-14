@@ -39,6 +39,7 @@
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -59,17 +60,17 @@
                                 </FXCollections>
                             </items>
                         </ComboBox>
-                        <Label text="Payment Type:" GridPane.rowIndex="2">
+                        <Label text="Payment Method:" GridPane.rowIndex="3">
                             <font>
                                 <Font size="15.0" />
                             </font>
                         </Label>
-                        <Label text="Amount:" GridPane.rowIndex="3">
+                        <Label text="Amount:" GridPane.rowIndex="4">
                             <font>
                                 <Font size="15.0" />
                             </font>
                         </Label>
-                        <Label text="Description:" GridPane.rowIndex="6">
+                        <Label text="Description:" GridPane.rowIndex="7">
                             <font>
                                 <Font size="15.0" />
                             </font>
@@ -80,20 +81,26 @@
                             </font>
                         </Label>
                   <SearchableComboBox fx:id="accountHolderComboBox" promptText="Select Account Holder" styleClass="combo-box" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <SearchableComboBox fx:id="paymentTypeComboBox" promptText="Select Payment Type" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField fx:id="amountTextField" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Label text="Previous Balance:" GridPane.rowIndex="4">
+                  <SearchableComboBox fx:id="paymentTypeComboBox" promptText="Select Payment Method" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="amountTextField" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="Previous Balance:" GridPane.rowIndex="5">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="previousBalanceTextField" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <TextField fx:id="netBalanceTextField" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <Label text="Net Balance:" GridPane.rowIndex="5">
+                  <TextField fx:id="previousBalanceTextField" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <TextField fx:id="netBalanceTextField" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Label text="Net Balance:" GridPane.rowIndex="6">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Label>
+                  <Label text="Payment Type:" GridPane.rowIndex="2">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <SearchableComboBox fx:id="paymentOptionsComboBox" promptText="Select Payment Type" styleClass="combo-box" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                     </children>
                 </GridPane>
                 <HBox alignment="TOP_RIGHT" spacing="20.0" VBox.vgrow="ALWAYS">

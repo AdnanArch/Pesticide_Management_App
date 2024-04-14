@@ -7,18 +7,17 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class SalesRecord {
     private final SimpleStringProperty product;
-    private final SimpleFloatProperty quantity;
+    private final SimpleStringProperty quantity;
     private final SimpleStringProperty accountHolder;
     private final SimpleStringProperty paymentType;
-    private final SimpleDoubleProperty amount;
+    private final SimpleStringProperty amount;
 
-    public SalesRecord(String product, float quantity, String accountHolder, String paymentType,
-            double amount) {
+    public SalesRecord(String product, String quantity, String accountHolder, String paymentType, String amount) {
         this.product = new SimpleStringProperty(product);
-        this.quantity = new SimpleFloatProperty(quantity);
+        this.quantity = new SimpleStringProperty(quantity);
         this.accountHolder = new SimpleStringProperty(accountHolder);
         this.paymentType = new SimpleStringProperty(paymentType);
-        this.amount = new SimpleDoubleProperty(amount);
+        this.amount = new SimpleStringProperty(amount);
     }
 
     public String getProduct() {
@@ -33,15 +32,15 @@ public class SalesRecord {
         this.product.set(product);
     }
 
-    public float getQuantity() {
+    public String getQuantity() {
         return quantity.get();
     }
 
-    public SimpleFloatProperty quantityProperty() {
+    public SimpleStringProperty quantityProperty() {
         return quantity;
     }
 
-    public void setQuantity(float quantity) {
+    public void setQuantity(String quantity) {
         this.quantity.set(quantity);
     }
 
@@ -69,15 +68,15 @@ public class SalesRecord {
         this.paymentType.set(paymentType);
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount.get();
     }
 
-    public SimpleDoubleProperty amountProperty() {
+    public SimpleStringProperty amountProperty() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(String amount) {
         this.amount.set(amount);
     }
 }

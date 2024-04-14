@@ -6,27 +6,28 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.commons.math3.optimization.linear.SimplexSolver;
 
 public class DebitCredit extends Application {
     private final SimpleStringProperty date;
-    private final SimpleDoubleProperty debit;
-    private final SimpleDoubleProperty credit;
-    private final SimpleDoubleProperty balance;
+    private final SimpleStringProperty debit;
+    private final SimpleStringProperty credit;
+    private final SimpleStringProperty balance;
     private final SimpleStringProperty description;
 
-    public DebitCredit(String date, double debit, double credit, double balance, String description) {
+    public DebitCredit(String date, String debit, String credit, String balance, String description) {
         this.date = new SimpleStringProperty(date);
-        this.debit = new SimpleDoubleProperty(debit);
-        this.credit = new SimpleDoubleProperty(credit);
-        this.balance = new SimpleDoubleProperty(balance);
+        this.debit = new SimpleStringProperty(debit);
+        this.credit = new SimpleStringProperty(credit);
+        this.balance = new SimpleStringProperty(balance);
         this.description = new SimpleStringProperty(description);
     }
 
     public DebitCredit(){
         this.date = new SimpleStringProperty();
-        this.debit = new SimpleDoubleProperty();
-        this.credit = new SimpleDoubleProperty();
-        this.balance = new SimpleDoubleProperty();
+        this.debit = new SimpleStringProperty();
+        this.credit = new SimpleStringProperty();
+        this.balance = new SimpleStringProperty();
         this.description = new SimpleStringProperty();
     }
 
@@ -42,39 +43,39 @@ public class DebitCredit extends Application {
         this.date.set(date);
     }
 
-    public double getDebit() {
+    public String getDebit() {
         return debit.get();
     }
 
-    public SimpleDoubleProperty debitProperty() {
+    public SimpleStringProperty debitProperty() {
         return debit;
     }
 
-    public void setDebit(double debit) {
+    public void setDebit(String debit) {
         this.debit.set(debit);
     }
 
-    public double getCredit() {
+    public String getCredit() {
         return credit.get();
     }
 
-    public SimpleDoubleProperty creditProperty() {
+    public SimpleStringProperty creditProperty() {
         return credit;
     }
 
-    public void setCredit(double credit) {
+    public void setCredit(String credit) {
         this.credit.set(credit);
     }
 
-    public double getBalance() {
+    public String getBalance() {
         return balance.get();
     }
 
-    public SimpleDoubleProperty balanceProperty() {
+    public SimpleStringProperty balanceProperty() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(String balance) {
         this.balance.set(balance);
     }
 

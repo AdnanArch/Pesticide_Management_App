@@ -35,9 +35,18 @@ public class CartUtility {
                     MessageDialogs.showWarningMessage("Additional Quantity will be added to over invoice.");
                 }
             }
+            double amount = Double.parseDouble(price) * Double.parseDouble(quantity);
             // add the item to the cartItems
-            cartItems.add(new Cart(productCode, productName, brandName, Double.parseDouble(quantity),
-                    Double.parseDouble(price), Double.parseDouble(price) * Double.parseDouble(quantity)));
+            cartItems.add(
+                    new Cart(
+                            productCode,
+                            productName,
+                            brandName,
+                            NumberFormatter.formatWithCommas(Double.parseDouble(quantity)),
+                            NumberFormatter.formatWithCommas(Double.parseDouble(price)),
+                            NumberFormatter.formatWithCommas(amount)
+                    )
+            );
         }
         return true;
     }
@@ -69,7 +78,8 @@ public class CartUtility {
     public static double calculateTotalBill(ObservableList<Cart> cartItems) {
         double totalBill = 0.0;
         for (Cart cartItem : cartItems) {
-            totalBill += cartItem.getTotalPrice();
+            String bill = cartItem.getTotalPrice();
+            totalBill += NumberFormatter.removeCommas(bill);
         }
         return totalBill;
     }
@@ -102,13 +112,22 @@ public class CartUtility {
             selectedCartItem.setProductCode(productCode);
             selectedCartItem.setProductName(productName);
             selectedCartItem.setBrandName(brandName);
-            selectedCartItem.setQuantity(Double.parseDouble(quantityText));
-            selectedCartItem.setPricePerUnit(Double.parseDouble(priceText));
-            selectedCartItem.setTotalPrice(Double.parseDouble(priceText) * Double.parseDouble(quantityText));
+            selectedCartItem.setQuantity(NumberFormatter.formatWithCommas(Double.parseDouble(quantityText)));
+            selectedCartItem.setPricePerUnit(NumberFormatter.formatWithCommas(Double.parseDouble(priceText)));
+            selectedCartItem.setTotalPrice(NumberFormatter.formatWithCommas(Double.parseDouble(priceText) * Double.parseDouble(quantityText)));
             return true;
         } else {
             MessageDialogs.showErrorMessage("Please select an item from the cart to update.");
             return false;
         }
+    }
+
+    public static ObservableList<Cart> removeCommasFromCartItems(ObservableList<Cart> cartItems){
+        for (Cart cartItem : cartItems) {
+            cartItem.setQuantity(String.valueOf(NumberFormatter.removeCommas(cartItem.getQuantity())));
+            cartItem.setPricePerUnit(String.valueOf(NumberFormatter.removeCommas(cartItem.getPricePerUnit())));
+            cartItem.setTotalPrice(String.valueOf(NumberFormatter.removeCommas(cartItem.getTotalPrice())));
+        }
+        return cartItems;
     }
 }

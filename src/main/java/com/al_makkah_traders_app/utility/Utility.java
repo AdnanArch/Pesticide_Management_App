@@ -123,12 +123,10 @@ public class Utility {
 //        }
 //    }
         if (paymentMethod == null || paymentMethod.isEmpty()) {
-            System.out.println(paymentMethod);
             return ""; // or handle the null case appropriately
         }
         String[] strings = paymentMethod.split(" -> ");
         String paymentMode =  strings[1].trim();
-        System.out.println(paymentMode);
         return paymentMode;
     }
 }

@@ -946,6 +946,8 @@ public class DatabaseOperations {
 
             double paidBill = Double.parseDouble(paidAmount);
             double totalBill = Double.parseDouble(totalAmount);
+            System.out.println(paidAmount);
+            System.out.println(totalAmount);
 
             String paymentStatus = paidBill == totalBill ? "Completed" : "Pending";
 
@@ -1594,13 +1596,14 @@ public class DatabaseOperations {
             String accountNo,
             double amount,
             String description,
-            String paymentType) {
+            String paymentType,
+            String paymentStatus) {
         boolean result = false;
         String billId;
         try {
             DatabaseConnection db = new DatabaseConnection();
             CallableStatement statement = db.getConnection()
-                    .prepareCall("{CALL sp_insert_empty_bill(?, ?, ?, ?, ?, ?)}");
+                    .prepareCall("{CALL sp_insert_empty_bill(?, ?, ?, ?, ?, ?, ?)}");
 
             statement.setLong(1, holderNo.longValue());
             statement.setString(2, accountNo);
@@ -1608,6 +1611,7 @@ public class DatabaseOperations {
             statement.setString(4, description);
             statement.setString(5, paymentType);
             statement.registerOutParameter(6, Types.VARCHAR);
+            statement.setString(7, paymentStatus);
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -2181,5 +2185,30 @@ public class DatabaseOperations {
                     e);
         }
         return result;
+    }
+
+    public static ObservableList<Booking> getBookingsReport() {
+        ObservableList<Booking> bookings = FXCollections.observableArrayList();
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            CallableStatement statement = db.getConnection().prepareCall("CALL sp_get_bookings_report()");
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String productCode = resultSet.getString("productCode");
+                double orderedQuantity = resultSet.getDouble("orderedQuantity");
+                double leftQuantity = resultSet.getDouble("leftQuantity");
+                String orderedFrom = resultSet.getString("orderedFrom");
+                String requestType = resultSet.getString("requestType");
+
+                bookings.add(new Booking(productCode, orderedFrom, orderedQuantity, leftQuantity, requestType));
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while fetching bookings report from database {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while fetching bookings report from database.{}", e.getMessage(),
+                    e);
+        }
+        return bookings;
     }
 }

@@ -187,11 +187,13 @@ public class BillPrinter {
                     contentStream.beginText();
                     contentStream.setFont(PDType1Font.COURIER, 10);
                     contentStream.newLineAtOffset(startX, currentY);
-                    String itemDetails = String.format("%-2d %-25s %-20s %-15.1f %-15.2f %-20.2f", srNo++, item.getProductName(), item.getBrandName(), item.getQuantity(), item.getPricePerUnit(), item.getTotalPrice());
+                    String itemDetails = String.format("%-2d %-25s %-20s %-15s %-15s %-20s", srNo++, item.getProductName(), item.getBrandName(), item.getQuantity(), item.getPricePerUnit(), item.getTotalPrice());
                     contentStream.showText(itemDetails);
                     contentStream.endText();
-                    totalQty += item.getQuantity();
-                    totalAmt += item.getTotalPrice();
+                    String quantity = item.getQuantity();
+                    totalQty += NumberFormatter.removeCommas(quantity);
+                    String amount = item.getTotalPrice();
+                    totalAmt += NumberFormatter.removeCommas(amount);
                     currentY -= leading;
                 }
                 // Display Total Qty and Total Amount below their columns

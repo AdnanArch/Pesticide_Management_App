@@ -5,6 +5,7 @@ import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.Cart;
 import com.al_makkah_traders_app.model.PurchaseRequest;
 import com.al_makkah_traders_app.utility.CartUtility;
+import com.al_makkah_traders_app.utility.NumberFormatter;
 import com.al_makkah_traders_app.utility.Utility;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +18,8 @@ import org.controlsfx.control.SearchableComboBox;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static com.al_makkah_traders_app.utility.CartUtility.removeCommasFromCartItems;
 
 public class PurchaseRequestController {
     ObservableList<Cart> cartItems;
@@ -183,7 +186,7 @@ public class PurchaseRequestController {
         String quantity = quantityTextField.getText();
         String price = priceTextField.getText();
 
-        boolean isAdded = CartUtility.addCartItem(cartItems, productCode, productName, brandName, quantity, price,
+        boolean isAdded = CartUtility.addCartItem(removeCommasFromCartItems(cartItems), productCode, productName, brandName, quantity, price,
                 false);
 
         if (isAdded) {
@@ -200,7 +203,9 @@ public class PurchaseRequestController {
     private double calculateTotalAmount() {
         double totalAmount = 0.0;
         for (Cart cartItem : cartItems) {
-            totalAmount += cartItem.getTotalPrice();
+            String amountString = cartItem.getTotalPrice();
+            String amount = String.valueOf(NumberFormatter.removeCommas(amountString));
+            totalAmount += Double.parseDouble(amount);
         }
         return totalAmount;
     }
@@ -319,7 +324,7 @@ public class PurchaseRequestController {
                         MessageDialogs.showWarningMessage("Paid amount cannot be greater than total amount.");
                         return;
                     }
-                    boolean requestSubmitted = DatabaseOperations.submitRequestToCompany(cartItems, totalAmount, paidAmount,
+                    boolean requestSubmitted = DatabaseOperations.submitRequestToCompany(removeCommasFromCartItems(cartItems), totalAmount, paidAmount,
                             bookingType, paymentType, accountNo, sourceId);
                     if (requestSubmitted) {
                         MessageDialogs.showMessageDialog("Your request has been submitted successfully.");
@@ -347,9 +352,7 @@ public class PurchaseRequestController {
                             accountNo = Utility.extractAccountNumber(bankAccountNo);
                         }
                         case "Cash" -> accountNo = "0000-000000";
-                        case "Post Payment" -> {
-                            paymentStatus = "Pending";
-                        }
+                        case "Post Payment" -> paymentStatus = "Pending";
                     }
                     // bug fix for paid amount greater than total amount
                     if (incorrectAmount) {
@@ -424,7 +427,7 @@ public class PurchaseRequestController {
         productCodeSearchableComboBox.setValue(selectedCartItem.getProductCode());
         productNameTextField.setText(selectedCartItem.getProductName());
         brandNameTextField.setText(selectedCartItem.getBrandName());
-        priceTextField.setText(String.valueOf(selectedCartItem.getPricePerUnit()));
+        priceTextField.setText(String.valueOf(NumberFormatter.removeCommas(selectedCartItem.getPricePerUnit())));
         quantityTextField.setText(String.valueOf(selectedCartItem.getQuantity()));
     }
 

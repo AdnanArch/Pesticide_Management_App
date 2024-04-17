@@ -3,10 +3,7 @@ package com.al_makkah_traders_app.controller;
 import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.Cart;
-import com.al_makkah_traders_app.utility.BillCreationResult;
-import com.al_makkah_traders_app.utility.BillPrinter;
-import com.al_makkah_traders_app.utility.CartUtility;
-import com.al_makkah_traders_app.utility.Utility;
+import com.al_makkah_traders_app.utility.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -119,7 +116,7 @@ public class AccountHolderBillController {
         productCodeSearchableComboBox.setValue(cartItem.getProductCode());
         productNameTextField.setText(cartItem.getProductName());
         brandNameTextField.setText(cartItem.getBrandName());
-        priceTextField.setText(String.valueOf(cartItem.getPricePerUnit()));
+        priceTextField.setText(String.valueOf(NumberFormatter.removeCommas(cartItem.getPricePerUnit())));
         quantityTextField.setText(String.valueOf(cartItem.getQuantity()));
     }
 
@@ -229,7 +226,7 @@ public class AccountHolderBillController {
             return;
         }
 
-        String accountNumber = "";
+        String accountNumber;
 
         // if payment method string ends with "Cash" then accountNo = "0000-000000"
         if (paymentMethod.endsWith("Cash")) {
@@ -318,7 +315,7 @@ public class AccountHolderBillController {
     }
 
     private static double getNetBalance(double previousBalance, double amount, double totalBill) {
-        double netBalance = 0;
+        double netBalance;
         // Previous balance is positive, add the amount
         netBalance = previousBalance + amount - totalBill;
 

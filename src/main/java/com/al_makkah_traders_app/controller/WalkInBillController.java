@@ -3,11 +3,13 @@ package com.al_makkah_traders_app.controller;
 import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.Cart;
-import com.al_makkah_traders_app.utility.*;
+import com.al_makkah_traders_app.utility.BillCreationResult;
+import com.al_makkah_traders_app.utility.BillPrinter;
+import com.al_makkah_traders_app.utility.CartUtility;
+import com.al_makkah_traders_app.utility.Utility;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -185,7 +187,7 @@ public class WalkInBillController {
             return;
         }
 
-        String accountNumber = "";
+        String accountNumber;
 
         // if payment method string ends with "Cash" then accountNo = "0000-000000"
         if (paymentMethod.endsWith("Cash")) {

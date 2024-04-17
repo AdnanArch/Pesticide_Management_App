@@ -69,13 +69,13 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="brandNameTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="productNameTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Brand:" GridPane.rowIndex="2">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="productNameTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="brandNameTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Account Holder:">
                             <font>
                                 <Font size="15.0" />

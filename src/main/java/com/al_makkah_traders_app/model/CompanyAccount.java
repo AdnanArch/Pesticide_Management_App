@@ -1,7 +1,6 @@
 package com.al_makkah_traders_app.model;
 
 import javafx.application.Application;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

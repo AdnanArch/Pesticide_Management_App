@@ -1,18 +1,16 @@
 package com.al_makkah_traders_app.controller;
 
-import org.controlsfx.control.SearchableComboBox;
-
 import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.StockArrival;
 import com.al_makkah_traders_app.utility.Utility;
-
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import org.controlsfx.control.SearchableComboBox;
 
 public class StockArrivalController {
     @FXML

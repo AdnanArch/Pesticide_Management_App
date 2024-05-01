@@ -1,8 +1,10 @@
 package com.al_makkah_traders_app.controller;
 
-import com.al_makkah_traders_app.model.*;
+import com.al_makkah_traders_app.model.AccountHolder;
+import com.al_makkah_traders_app.model.Booking;
+import com.al_makkah_traders_app.model.CompanyAccount;
+import com.al_makkah_traders_app.model.Product;
 import com.al_makkah_traders_app.utility.DateFormatter;
-import com.al_makkah_traders_app.utility.GenerateReport;
 import com.al_makkah_traders_app.utility.ReportTest;
 import com.al_makkah_traders_app.utility.ReportUtil;
 import javafx.fxml.FXML;

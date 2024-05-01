@@ -60,9 +60,10 @@ public class EmptyBillController {
         if (paymentOption == null) {
             return;
         }
-        System.out.println(paymentOption);
         if (paymentOption.equals("Cash")){
-            paymentTypeComboBox.setDisable(true);
+            paymentTypeComboBox.setItems(FXCollections.observableArrayList("0000-000000 -> CASH (DAY BOOK)"));
+            paymentTypeComboBox.setValue("0000-000000 -> CASH (DAY BOOK)");
+//            paymentTypeComboBox.setDisable(true);
         } else {
             paymentTypeComboBox.setDisable(false);
             ObservableList<String> bankAccounts = DatabaseOperations.getCompanyBankAccounts();

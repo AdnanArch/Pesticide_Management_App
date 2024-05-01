@@ -1,13 +1,12 @@
 package com.al_makkah_traders_app.utility;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.al_makkah_traders_app.model.Cart;
 import com.al_makkah_traders_app.model.StockTransferCart;
 import com.google.gson.Gson;
-
 import javafx.collections.ObservableList;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utility {
     public static String extractAccountNumber(String inputString) {

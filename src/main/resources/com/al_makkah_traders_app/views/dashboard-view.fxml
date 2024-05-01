@@ -28,6 +28,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#accountHolderBillMenuItem" text="Account Holder Bill" />
                         <MenuItem mnemonicParsing="false" onAction="#emptyBillMenuItem" text="Deposit / Withdrawal" />
                         <MenuItem mnemonicParsing="false" onAction="#onPettyCashPaymentMenuItem" text="Petty Cash Payments" />
+                  <MenuItem mnemonicParsing="false" onAction="#onPendingPaymentMenuItem" text="Pending Cheques" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Stock">

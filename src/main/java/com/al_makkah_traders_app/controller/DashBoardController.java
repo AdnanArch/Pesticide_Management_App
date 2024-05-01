@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -300,6 +299,17 @@ public class DashBoardController {
     @FXML
     void onBackupDatabaseMenuItem(){
         DatabaseBackup.backupDatabase();
+    }
+
+    @FXML
+    void onPendingPaymentMenuItem() {
+        PendingCheque pendingCheque = new PendingCheque();
+        Stage stage = new Stage();
+        try {
+            pendingCheque.start(stage);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

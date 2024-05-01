@@ -7,7 +7,6 @@ import com.al_makkah_traders_app.utility.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -73,7 +72,7 @@ public class WalkInBillController {
         productCodeSearchableComboBox.setValue(cartItem.getProductCode());
         productNameTextField.setText(cartItem.getProductName());
         brandNameTextField.setText(cartItem.getBrandName());
-        priceTextField.setText(String.valueOf(cartItem.getPricePerUnit()));
+        priceTextField.setText(String.valueOf(NumberFormatter.removeCommas(cartItem.getTotalPrice())));
         quantityTextField.setText(String.valueOf(cartItem.getQuantity()));
     }
 

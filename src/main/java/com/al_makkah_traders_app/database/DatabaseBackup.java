@@ -4,7 +4,8 @@ import com.al_makkah_traders_app.messages.MessageDialogs;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 public class DatabaseBackup {
     public static void backupDatabase() {

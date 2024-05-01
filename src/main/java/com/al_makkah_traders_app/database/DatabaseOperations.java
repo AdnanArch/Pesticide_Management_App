@@ -2211,4 +2211,61 @@ public class DatabaseOperations {
         }
         return bookings;
     }
+
+    public static ObservableList<PendingCheque> getAllPendingCheques() {
+        ObservableList<PendingCheque> pendingCheques = FXCollections.observableArrayList();
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            CallableStatement statement = db.getConnection().prepareCall("CALL sp_get_pending_cheques()");
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String chequeNo = resultSet.getString("cheque_no");
+                String holderName = resultSet.getString("holder_name");
+                double amount = resultSet.getDouble("amount");
+                String paymentType = resultSet.getString("payment_type");
+
+                pendingCheques.add(new PendingCheque(chequeNo, holderName, NumberFormatter.formatWithCommas(amount), paymentType));
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while fetching pending cheques from database {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while fetching pending cheques from database.{}", e.getMessage(),
+                    e);
+        }
+        return pendingCheques;
+    }
+
+    public static boolean makePayment(String paymentType, String chequeNo, String amount, String account) {
+        boolean result = false;
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_make_payment(?, ?, ?, ?, ?)}");
+
+            double paymentAmount = NumberFormatter.removeCommas(amount);
+
+            statement.setString(1, paymentType);
+            statement.setString(2, chequeNo);
+            statement.setDouble(3, paymentAmount);
+            statement.setString(4, account);
+
+            // Registering the fourth parameter as an OUT parameter to capture the success status
+            statement.registerOutParameter(5, Types.BOOLEAN);
+
+            statement.execute();
+
+            // Retrieving the result of the stored procedure
+            result = statement.getBoolean(5);
+
+            statement.close();
+            db.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while making payment: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while making payment: {}", e.getMessage(), e);
+        }
+        return result;
+    }
+
+
 }

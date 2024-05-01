@@ -226,7 +226,7 @@ public class AccountHolderBillController {
             return;
         }
 
-        String accountNumber = "";
+        String accountNumber;
 
         // if payment method string ends with "Cash" then accountNo = "0000-000000"
         if (paymentMethod.endsWith("Cash")) {
@@ -315,7 +315,7 @@ public class AccountHolderBillController {
     }
 
     private static double getNetBalance(double previousBalance, double amount, double totalBill) {
-        double netBalance = 0;
+        double netBalance;
         // Previous balance is positive, add the amount
         netBalance = previousBalance + amount - totalBill;
 

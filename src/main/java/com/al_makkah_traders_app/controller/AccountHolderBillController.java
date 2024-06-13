@@ -299,11 +299,13 @@ public class AccountHolderBillController {
         // Get the entered amount
         double amount = 0;
         double totalBill = 0;
-        if (!receivedAmountTextField.getText().isEmpty() && Utility.isNumeric(receivedAmountTextField.getText())) {
+        String receivedAmountString = receivedAmountTextField.getText();
+        String totalAmountString = totalBillTextField.getText();
+        if (!receivedAmountString.isEmpty() && Utility.isNumeric(receivedAmountString)) {
             amount = Double.parseDouble(receivedAmountTextField.getText());
         }
 
-        if (!totalBillTextField.getText().isEmpty() && Utility.isNumeric(totalBillTextField.getText())) {
+        if (!totalAmountString.isEmpty() && Utility.isNumeric(totalAmountString)) {
             totalBill = Double.parseDouble(totalBillTextField.getText());
         }
 
@@ -317,7 +319,7 @@ public class AccountHolderBillController {
     private static double getNetBalance(double previousBalance, double amount, double totalBill) {
         double netBalance;
         // Previous balance is positive, add the amount
-        netBalance = previousBalance + amount - totalBill;
+        netBalance = previousBalance - amount + totalBill;
 
 
         return netBalance;
@@ -335,7 +337,5 @@ public class AccountHolderBillController {
         // Calculate and set the initial net balance
         calculateAndSetNetBalance();
     }
-
-
 
 }

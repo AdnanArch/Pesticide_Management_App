@@ -80,7 +80,7 @@ public class EmptyBillController {
     }
 
     private static double getNetBalance(String billType, double previousBalance, double amount) {
-        return "Deposit Cash".equals(billType) ? previousBalance + amount : previousBalance - amount;
+        return "Deposit Cash".equals(billType) ? previousBalance - amount : previousBalance + amount;
     }
 
     private void populatePreviousBalance(String accountHolder) {
@@ -130,7 +130,9 @@ public class EmptyBillController {
             accountNo = Utility.extractAccountNumber(paymentMethod);
         }
 
-        String paymentType = "Deposit Cash".equals(billTypeComboBox.getValue()) ? "credit" : "debit";
+        System.out.println(accountNo);
+
+        String paymentType = "Deposit Cash".equals(billTypeComboBox.getValue()) ? "debit" : "credit";
 //        accountNo = paymentMethod.endsWith("Cash") ? "0000-000000" : Utility.extractAccountNumber(paymentMethod);
 
         double amount = Double.parseDouble(amountTextField.getText());
@@ -158,7 +160,8 @@ public class EmptyBillController {
     private boolean insertBill() {
         String paymentMethod = paymentTypeComboBox.getValue();
         String paymentType = "Deposit Cash".equals(billTypeComboBox.getValue()) ? "credit" : "debit";
-        String accountNo = paymentMethod.endsWith("Cash") ? "0000-000000" : Utility.extractAccountNumber(paymentMethod);
+        String accountNo = paymentMethod.contains("0000-000000") ? "0000-000000" : Utility.extractAccountNumber(paymentMethod);
+        System.out.println(accountNo);
         double amount = Double.parseDouble(amountTextField.getText());
         String description = descriptionArea.getText();
 

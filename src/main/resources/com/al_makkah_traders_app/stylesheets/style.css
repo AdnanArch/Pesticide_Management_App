@@ -41,7 +41,7 @@
 }
 
 .right-form {
-    -fx-padding: 20px 40px 40px 40px;
+    -fx-padding: 10px 20px;
     -fx-background-color: #fff;
     -fx-background-radius: 10px;
 }

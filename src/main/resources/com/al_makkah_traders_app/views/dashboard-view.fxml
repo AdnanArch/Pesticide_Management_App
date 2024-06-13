@@ -76,20 +76,20 @@
                     <children>
                         <HBox>
                             <children>
-                                <Label alignment="CENTER" contentDisplay="CENTER" stylesheets="@../stylesheets/fonts.css" text="Al-Makkah Traders" textFill="WHITE" HBox.hgrow="ALWAYS">
+                                <Label alignment="TOP_LEFT" contentDisplay="TOP" stylesheets="@../stylesheets/fonts.css" text="Al-Makkah Traders" textFill="WHITE">
                                     <font>
-                                        <Font name="Times New Roman Bold" size="45.0" />
+                                        <Font name="Times New Roman Bold" size="36.0" />
                                     </font>
-                                    <padding>
-                                        <Insets bottom="10.0" top="10.0" />
-                                    </padding>
                                 </Label>
-                                <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="67.0" prefWidth="351.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                                <HBox alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="67.0" prefWidth="351.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                     <children>
                                         <DatePicker fx:id="dateTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" />
                                         <Button mnemonicParsing="false" onAction="#onSearch" text="Search" />
                                         <Button mnemonicParsing="false" onAction="#onReset" prefWidth="60.0" text="Reset" />
                                     </children>
+                           <padding>
+                              <Insets top="5.0" />
+                           </padding>
                                 </HBox>
                             </children>
                         </HBox>
@@ -117,7 +117,7 @@
                                         <Insets />
                                     </GridPane.margin>
                                 </Label>
-                                <TableView fx:id="stockArrivalsTableView" stylesheets="@../stylesheets/style.css" GridPane.rowIndex="3">
+                                <TableView fx:id="stockArrivalsTableView" prefHeight="300.0" stylesheets="@../stylesheets/style.css" GridPane.rowIndex="3">
                                     <columns>
                                         <TableColumn text="From">
                                             <cellValueFactory>
@@ -194,7 +194,7 @@
                                         <Insets />
                                     </GridPane.margin>
                                 </Label>
-                                <TableView fx:id="miscellaneousPaymentsTableView" prefHeight="300.0" stylesheets="@../stylesheets/style.css" GridPane.rowIndex="5">
+                                <TableView fx:id="miscellaneousPaymentsTableView" prefHeight="250.0" stylesheets="@../stylesheets/style.css" GridPane.rowIndex="5">
                                     <columns>
                                         <TableColumn text="Amount">
                                             <cellValueFactory>
@@ -255,8 +255,9 @@
                                 <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS">
                                     <children>
                                         <Label fx:id="bismillahHeading" styleClass="urdu_main_label" stylesheets="@../stylesheets/fonts.css" text="بسم اللہ الرحمن الرحیم۔" textFill="#14b8a6">
-
-                                        </Label>
+                                 <padding>
+                                    <Insets top="15.0" />
+                                 </padding></Label>
                                     </children>
                                 </HBox>
                                 <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -290,9 +291,6 @@
                     </padding>
                 </VBox>
             </children>
-            <padding>
-                <Insets bottom="15.0" left="15.0" right="15.0" />
-            </padding>
         </VBox>
     </center>
 </BorderPane>

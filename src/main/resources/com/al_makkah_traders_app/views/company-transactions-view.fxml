@@ -46,14 +46,14 @@
                                 <PropertyValueFactory property="description" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn prefWidth="75.0" text="Credit">
-                            <cellValueFactory>
-                                <PropertyValueFactory property="credit" />
-                            </cellValueFactory>
-                        </TableColumn>
                         <TableColumn prefWidth="75.0" text="Debit">
                             <cellValueFactory>
                                 <PropertyValueFactory property="debit" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="75.0" text="Credit">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="credit" />
                             </cellValueFactory>
                         </TableColumn>
                         <TableColumn prefWidth="75.0" text="Balance">

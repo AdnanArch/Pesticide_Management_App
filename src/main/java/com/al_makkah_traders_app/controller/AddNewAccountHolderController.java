@@ -5,6 +5,7 @@ import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.AccountHolder;
 import com.al_makkah_traders_app.model.ImportAccountHoldersData;
 import com.al_makkah_traders_app.model.MaskedTextField;
+import com.al_makkah_traders_app.utility.NumberFormatter;
 import com.al_makkah_traders_app.utility.Utility;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -77,7 +78,7 @@ public class AddNewAccountHolderController {
         addressTextField.setText(selectedAccountHolder.getAddress());
         phoneTextField.setText(selectedAccountHolder.getPhone());
         wholesalerCheck.setSelected(selectedAccountHolder.isRetailerProperty().get());
-        balanceTextField.setText(selectedAccountHolder.getTotalBalance());
+        balanceTextField.setText(String.valueOf(NumberFormatter.removeCommas(selectedAccountHolder.getTotalBalance())));
     }
 
     @FXML

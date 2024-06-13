@@ -737,11 +737,13 @@ public class DatabaseOperations {
             String price,
             String companyName,
             String address,
-            String contact) {
+            String contact,
+            double shopQuantity,
+            double warehouseQuantity){
         try {
             DatabaseConnection db = new DatabaseConnection();
             CallableStatement statement = db.getConnection()
-                    .prepareCall("CALL sp_update_product_info(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    .prepareCall("CALL sp_update_product_info(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, productCode);
             statement.setString(2, productName);
             statement.setString(3, categoryName);
@@ -750,11 +752,13 @@ public class DatabaseOperations {
             statement.setString(6, companyName);
             statement.setString(7, address);
             statement.setString(8, contact);
-            statement.registerOutParameter(9, Types.BOOLEAN);
+            statement.setDouble(9, shopQuantity);
+            statement.setDouble(10, warehouseQuantity);
+            statement.registerOutParameter(11, Types.BOOLEAN);
 
             statement.execute();
 
-            boolean updated = statement.getBoolean(9);
+            boolean updated = statement.getBoolean(11);
 
             statement.close();
             db.close();
@@ -1603,7 +1607,7 @@ public class DatabaseOperations {
         try {
             DatabaseConnection db = new DatabaseConnection();
             CallableStatement statement = db.getConnection()
-                    .prepareCall("{CALL sp_insert_empty_bill(?, ?, ?, ?, ?, ?, ?)}");
+                    .prepareCall("{CALL sp_insert_empty_bill(?, ?, ?, ?, ?, ?, ?, ?)}");
 
             statement.setLong(1, holderNo.longValue());
             statement.setString(2, accountNo);
@@ -1612,14 +1616,17 @@ public class DatabaseOperations {
             statement.setString(5, paymentType);
             statement.registerOutParameter(6, Types.VARCHAR);
             statement.setString(7, paymentStatus);
+            statement.registerOutParameter(8, Types.BOOLEAN); // Register the new output parameter
 
-            ResultSet resultSet = statement.executeQuery();
+            // Execute the stored procedure
+            statement.execute();
 
+            // Retrieve the output parameters
             billId = statement.getString(6);
+            result = statement.getBoolean(8); // Get the result value
 
-            while (resultSet.next()) {
-                result = resultSet.getBoolean("result");
-            }
+            System.out.println(result);
+            System.out.println(billId);
             return new BillCreationResult(result, billId);
         } catch (SQLException e) {
             logger.error("SQL Exception occurred while inserting empty bill: {}", e.getMessage(), e);
@@ -1628,6 +1635,7 @@ public class DatabaseOperations {
         }
         return new BillCreationResult(result, null);
     }
+
 
     public static double getPreviousBalance(BigInteger holderNo) {
         double previousBalance = 0;

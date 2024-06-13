@@ -39,6 +39,10 @@ public class ProductController {
     private TextField productNameTextField;
     @FXML
     private TextField searchProductField;
+    @FXML
+    private TextField shopQuantityTextField;
+    @FXML
+    private TextField whQuantityTextField;
 
     // Reusable method to initialize the controller
     public void initialize() {
@@ -122,6 +126,8 @@ public class ProductController {
         brandNameTextField.setText(selectedProduct.getBrandName());
         companyNameTextField.setText(selectedProduct.getCompanyName());
         priceTextField.setText(String.valueOf(selectedProduct.getPrice()));
+        shopQuantityTextField.setText(String.valueOf(selectedProduct.getShopQuantity()));
+        whQuantityTextField.setText(String.valueOf(selectedProduct.getWarehouseQuantity()));
     }
 
     /**
@@ -138,12 +144,12 @@ public class ProductController {
         String companyName = companyNameTextField.getText().trim();
         String address = addressTextField.getText().trim();
         String contact = contactTextField.getText().trim();
-        double warehouseQuantity = 0;
-        double shopQuantity = 0;
+        double warehouseQuantity = Double.parseDouble(whQuantityTextField.getText());
+        double shopQuantity = Double.parseDouble(shopQuantityTextField.getText());
 
         // Check if the input data is valid
         boolean isValid = checkIfDataIsValid(productCode, productName, categoryName, brandName, price, companyName,
-                address, contact);
+                address, contact, warehouseQuantity, shopQuantity);
 
         if (isValid) {
             boolean result = DatabaseOperations.addNewProduct(productCode, productName, categoryName, brandName, price,
@@ -186,10 +192,13 @@ public class ProductController {
         String companyName = companyNameTextField.getText().trim();
         String address = addressTextField.getText().trim();
         String contact = contactTextField.getText().trim();
+        double warehouseQuantity = Double.parseDouble(whQuantityTextField.getText());
+        double shopQuantity = Double.parseDouble(shopQuantityTextField.getText());
+
 
         // Check if the input data is valid
         boolean isValid = checkIfDataIsValid(productCode, productName, categoryName, brandName, price, companyName,
-                address, contact);
+                address, contact, warehouseQuantity, shopQuantity);
 
         if (isValid) {
             boolean updated = DatabaseOperations.updateProductInfo(
@@ -200,7 +209,9 @@ public class ProductController {
                     price,
                     companyName,
                     address,
-                    contact);
+                    contact,
+                    shopQuantity,
+                    warehouseQuantity);
 
             if (updated) {
                 MessageDialogs.showMessageDialog("Product's data is successfully updated.");
@@ -238,7 +249,7 @@ public class ProductController {
 
     // Reusable method to check if the input data is valid
     private boolean checkIfDataIsValid(String productCode, String productName, String categoryName, String brandName,
-            String price, String companyName, String address, String contact) {
+                                       String price, String companyName, String address, String contact, double warehouseQuantity, double shopQuantity) {
         if (productCode.isEmpty()) {
             MessageDialogs.showWarningMessage("Please enter the product code.");
             return false;
@@ -263,6 +274,9 @@ public class ProductController {
         } else if (contact.isEmpty()) {
             MessageDialogs.showWarningMessage("Please enter the contact number of the company.");
             return false;
+        } else if (warehouseQuantity < 0 || shopQuantity < 0) {
+            MessageDialogs.showWarningMessage("Please enter a valid quantity.");
+            return false;
         }
         return true;
     }
@@ -277,5 +291,8 @@ public class ProductController {
         priceTextField.clear();
         contactTextField.clear();
         addressTextField.clear();
+        whQuantityTextField.clear();
+        shopQuantityTextField.clear();
     }
+
 }

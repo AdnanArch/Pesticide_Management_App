@@ -15,6 +15,7 @@ public class AccountHolder extends Application {
     private final SimpleBooleanProperty isRetailer;
     private SimpleStringProperty debitOrCredit;
     private final SimpleStringProperty totalBalance;
+    private final SimpleBooleanProperty isActive;
 
     public AccountHolder() {
         this.name = new SimpleStringProperty("");
@@ -23,10 +24,11 @@ public class AccountHolder extends Application {
         this.phone = new SimpleStringProperty("");
         this.isRetailer = new SimpleBooleanProperty(false);
         this.totalBalance = new SimpleStringProperty("");
+        this.isActive = new SimpleBooleanProperty(false);
     }
 
     public AccountHolder(String name, String cnicNo, String address, String phone, String debitOrCredit,
-            String totalBalance, boolean isRetailer) {
+            String totalBalance, boolean isRetailer, boolean isActive) {
         this.name = new SimpleStringProperty(name);
         this.cnicNo = new SimpleStringProperty(cnicNo);
         this.address = new SimpleStringProperty(address);
@@ -34,6 +36,7 @@ public class AccountHolder extends Application {
         this.debitOrCredit = new SimpleStringProperty(debitOrCredit);
         this.totalBalance = new SimpleStringProperty(totalBalance);
         this.isRetailer = new SimpleBooleanProperty(isRetailer);
+        this.isActive = new SimpleBooleanProperty(isActive);
     }
 
     public AccountHolder(String name, String debitOrCredit, String totalBalance, boolean isRetailer) {
@@ -44,6 +47,7 @@ public class AccountHolder extends Application {
         this.address = new SimpleStringProperty("");
         this.phone = new SimpleStringProperty("");
         this.isRetailer = new SimpleBooleanProperty(isRetailer);
+        this.isActive = new SimpleBooleanProperty(false);
     }
 
     @Override
@@ -54,6 +58,18 @@ public class AccountHolder extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Al-Makkah Traders");
         primaryStage.show();
+    }
+
+    public boolean isIsRetailer() {
+        return isRetailer.get();
+    }
+
+    public boolean isIsActive() {
+        return isActive.get();
+    }
+
+    public SimpleBooleanProperty isActiveProperty() {
+        return isActive;
     }
 
     public String getCnicNo() {

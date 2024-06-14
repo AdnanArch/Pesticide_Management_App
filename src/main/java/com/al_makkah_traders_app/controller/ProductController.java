@@ -3,6 +3,7 @@ package com.al_makkah_traders_app.controller;
 import com.al_makkah_traders_app.database.DatabaseConnection;
 import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.messages.MessageDialogs;
+import com.al_makkah_traders_app.model.AccountHolder;
 import com.al_makkah_traders_app.model.ImportProductsData;
 import com.al_makkah_traders_app.model.Product;
 import javafx.collections.ObservableList;
@@ -10,12 +11,23 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.controlsfx.control.SearchableComboBox;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProductController {
 
@@ -293,6 +305,66 @@ public class ProductController {
         addressTextField.clear();
         whQuantityTextField.clear();
         shopQuantityTextField.clear();
+    }
+
+    @FXML
+    void onExport(){
+        Workbook workbook = new XSSFWorkbook(); // Create a new Workbook
+        Sheet sheet = workbook.createSheet("Products Data"); // Create a Sheet
+
+        // Create a header row and populate it with column names
+        Row headerRow = sheet.createRow(0);
+        List<String> columnNames = Arrays.asList(
+                "Product Code",
+                "Product Name",
+                "Category",
+                "Brand",
+                "Company",
+                "Price",
+                "Shop Quantity",
+                "Warehouse Quantity",
+                "Address",
+                "Contact");
+
+        for (int i = 0; i < columnNames.size(); i++) {
+            Cell headerCell = headerRow.createCell(i);
+            headerCell.setCellValue(columnNames.get(i));
+        }
+
+        // Populate the sheet with data from accountHolderTableView
+        ObservableList<Product> products = productTableView.getItems();
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            Row row = sheet.createRow(i + 1); // +1 because header row is at position 0
+
+            row.createCell(0).setCellValue(product.getProductCode());
+            row.createCell(1).setCellValue(product.getProductName());
+            row.createCell(2).setCellValue(product.getCategoryName());
+            row.createCell(3).setCellValue(product.getBrandName());
+            row.createCell(4).setCellValue(product.getCompanyName());
+            row.createCell(5).setCellValue(product.getPrice());
+            row.createCell(6).setCellValue(product.getShopQuantity());
+            row.createCell(7).setCellValue(product.getWarehouseQuantity());
+            row.createCell(8).setCellValue(product.getAddress());
+            row.createCell(9).setCellValue(product.getContact());
+        }
+
+        // Open a FileChooser to let the user select where to save the file
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Excel File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+        File file = fileChooser.showSaveDialog(null); // Replace null with your current stage
+
+        if (file != null) {
+            // Write the workbook to the selected file
+            try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                workbook.write(fileOut);
+                MessageDialogs.showMessageDialog("Products File has been saved successfully.");
+            } catch (IOException e) {
+                MessageDialogs.showErrorMessage("An error occurred while saving the file.");
+                throw new RuntimeException("Error occurred while writing file" + e.getMessage());
+            }
+        }
     }
 
 }

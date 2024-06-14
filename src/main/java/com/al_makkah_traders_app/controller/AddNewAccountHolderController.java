@@ -13,7 +13,19 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Controller for adding, updating, and deleting account holders.
@@ -35,6 +47,8 @@ public class AddNewAccountHolderController {
     private TextField searchField;
     @FXML
     private CheckBox wholesalerCheck;
+    @FXML
+    private CheckBox disableUserCheckBox;
 
     /**
      * Initializes the controller.
@@ -79,6 +93,7 @@ public class AddNewAccountHolderController {
         phoneTextField.setText(selectedAccountHolder.getPhone());
         wholesalerCheck.setSelected(selectedAccountHolder.isRetailerProperty().get());
         balanceTextField.setText(String.valueOf(NumberFormatter.removeCommas(selectedAccountHolder.getTotalBalance())));
+        disableUserCheckBox.setSelected(false);
     }
 
     @FXML
@@ -118,7 +133,7 @@ public class AddNewAccountHolderController {
         } else if (phone.isEmpty()) {
             MessageDialogs.showErrorMessage("Please enter phone number of the account holder.");
             return false;
-        }else if(!Utility.isNumeric(balance)){
+        } else if (!Utility.isNumeric(balance)) {
             MessageDialogs.showErrorMessage("Please enter a valid balance.");
             return false;
         }
@@ -180,24 +195,40 @@ public class AddNewAccountHolderController {
         String address = addressTextField.getText().trim();
         String phone = phoneTextField.getText().trim();
         boolean isRetailer = wholesalerCheck.isSelected();
+        boolean isActive = disableUserCheckBox.isSelected();
         String balance = balanceTextField.getText();
+
+        if (isActive) {
+            if (Double.parseDouble(balance) == 0) {
+                boolean sure = MessageDialogs.showConfirmationDialog("Are you sure you want to disable this account holder?");
+                if (!sure) return;
+
+                boolean disabled = DatabaseOperations.disableAccountHolder(cnic);
+
+                if (disabled) {
+                    MessageDialogs.showMessageDialog("Account Holder is successfully disabled.");
+                    populateAccountHoldersTable();
+                } else {
+                    MessageDialogs.showWarningMessage("Account Holder not updated.");
+                }
+            } else {
+                MessageDialogs.showWarningMessage("Account Holder's balance is not zero. Please clear the balance first.");
+            }
+            return;
+        }
 
         boolean isValid = checkDataValidity(name, cnic, address, phone, balance);
 
         if (isValid) {
-            boolean confirmed = MessageDialogs
-                    .showConfirmationDialog("Are you sure you want to update this account holder's data?");
-
+            boolean confirmed = MessageDialogs.showConfirmationDialog("Are you sure you want to update this account holder's data?");
             if (confirmed) {
                 boolean updated = DatabaseOperations.updateAccountHolderInfo(name, cnic, address, phone, isRetailer, balance);
-
                 if (updated) {
                     MessageDialogs.showMessageDialog("Account Holder's data is successfully updated.");
                 } else {
                     MessageDialogs.showWarningMessage("Account Holder's data was not updated. Try deleting this " +
                             "Account Holder and creating a new one.");
                 }
-
                 populateAccountHoldersTable();
             }
         }
@@ -211,5 +242,53 @@ public class AddNewAccountHolderController {
         phoneTextField.clear();
         wholesalerCheck.setSelected(false);
         balanceTextField.clear();
+        disableUserCheckBox.setSelected(false);
     }
+
+    @FXML
+    void onExport() {
+        Workbook workbook = new XSSFWorkbook(); // Create a new Workbook
+        Sheet sheet = workbook.createSheet("Account Holders"); // Create a Sheet
+
+        // Create a header row and populate it with column names
+        Row headerRow = sheet.createRow(0);
+        List<String> columnNames = Arrays.asList("Name", "CNIC", "Address", "Phone", "Is Retailer", "Debit/Credit", "Balance");
+        for (int i = 0; i < columnNames.size(); i++) {
+            Cell headerCell = headerRow.createCell(i);
+            headerCell.setCellValue(columnNames.get(i));
+        }
+
+        // Populate the sheet with data from accountHolderTableView
+        ObservableList<AccountHolder> accountHolders = accountHolderTableView.getItems();
+        for (int i = 0; i < accountHolders.size(); i++) {
+            AccountHolder accountHolder = accountHolders.get(i);
+            Row row = sheet.createRow(i + 1); // +1 because header row is at position 0
+
+            row.createCell(0).setCellValue(accountHolder.getName());
+            row.createCell(1).setCellValue(accountHolder.getCnicNo());
+            row.createCell(2).setCellValue(accountHolder.getAddress());
+            row.createCell(3).setCellValue(accountHolder.getPhone());
+            row.createCell(4).setCellValue(accountHolder.isRetailerProperty().get());
+            row.createCell(5).setCellValue(accountHolder.getDebitOrCredit());
+            row.createCell(6).setCellValue(accountHolder.getTotalBalance());
+        }
+
+        // Open a FileChooser to let the user select where to save the file
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Excel File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+        File file = fileChooser.showSaveDialog(null); // Replace null with your current stage
+
+        if (file != null) {
+            // Write the workbook to the selected file
+            try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                workbook.write(fileOut);
+                MessageDialogs.showMessageDialog("File has been saved successfully.");
+            } catch (IOException e) {
+                MessageDialogs.showErrorMessage("An error occurred while saving the file.");
+                throw new RuntimeException("Error occurred while writing file" + e.getMessage());
+            }
+        }
+    }
+
 }

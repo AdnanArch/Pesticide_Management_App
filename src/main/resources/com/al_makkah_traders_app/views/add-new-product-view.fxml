@@ -144,6 +144,7 @@
                                 <TextField fx:id="searchProductField" styleClass="text-field" stylesheets="@../stylesheets/style.css" />
                                 <Button mnemonicParsing="false" onAction="#onSearch" text="Search" />
                                 <Button mnemonicParsing="false" onAction="#onRefresh" text="Refresh" />
+                        <Button mnemonicParsing="false" onAction="#onExport" text="Export" />
                             </children>
                             <VBox.margin>
                                 <Insets bottom="20.0" left="20.0" top="20.0" />

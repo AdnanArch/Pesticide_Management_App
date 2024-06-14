@@ -34,7 +34,7 @@ public class Product extends Application {
     }
 
     public Product(String productCode, String productName, String categoryName, String brandName, String companyName,
-                   double price, double warehouseQuantity, double shopQuantity) {
+                   double price, double warehouseQuantity, double shopQuantity, String address, String contact) {
         this.productCode = new SimpleStringProperty(productCode);
         this.productName = new SimpleStringProperty(productName);
         this.categoryName = new SimpleStringProperty(categoryName);
@@ -43,6 +43,8 @@ public class Product extends Application {
         this.price = new SimpleDoubleProperty(price);
         this.warehouseQuantity = new SimpleDoubleProperty(warehouseQuantity);
         this.shopQuantity = new SimpleDoubleProperty(shopQuantity);
+        this.address = new SimpleStringProperty(address);
+        this.contact = new SimpleStringProperty(contact);
     }
 
     public Product(String productName, String productCode, double shopQuantity, double warehouseQuantity) {

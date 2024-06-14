@@ -447,6 +447,7 @@ public class DatabaseOperations {
                 String type = resultSet.getString("transaction_type");
                 double balance = resultSet.getDouble("balance");
                 boolean isRetailer = resultSet.getBoolean("is_retailer");
+                boolean isActive = resultSet.getBoolean("is_active");
                 // Add each row to the ObservableList
                 accountHoldersData.add(
                         new AccountHolder(
@@ -456,7 +457,8 @@ public class DatabaseOperations {
                                 contact,
                                 type,
                                 NumberFormatter.formatWithCommas(balance),
-                                isRetailer
+                                isRetailer,
+                                isActive
                         )
                 );
             }
@@ -669,9 +671,11 @@ public class DatabaseOperations {
                 double price = resultSet.getDouble("price");
                 double warehouseQuantity = resultSet.getDouble("warehouse_quantity");
                 double shopQuantity = resultSet.getDouble("shop_quantity");
+                String address = resultSet.getString("address");
+                String contact = resultSet.getString("phone");
                 // Add each row to the ObservableList
                 productsData.add(new Product(productCode, productName, category, brand, company, price,
-                        warehouseQuantity, shopQuantity));
+                        warehouseQuantity, shopQuantity, address, contact));
             }
 
             statement.close();
@@ -679,10 +683,10 @@ public class DatabaseOperations {
 
             return productsData;
         } catch (SQLException e) {
-            logger.error("Error fetching product data: " + e.getMessage(), e);
+            logger.error("Error fetching product data: {}", e.getMessage(), e);
             return FXCollections.observableArrayList(); // Handle the error gracefully
         } catch (Exception e) {
-            logger.error("An unexpected error occurred: " + e.getMessage(), e);
+            logger.error("An unexpected error occurred: {}", e.getMessage(), e);
             return FXCollections.observableArrayList(); // Handle the error gracefully
         }
     }
@@ -739,7 +743,7 @@ public class DatabaseOperations {
             String address,
             String contact,
             double shopQuantity,
-            double warehouseQuantity){
+            double warehouseQuantity) {
         try {
             DatabaseConnection db = new DatabaseConnection();
             CallableStatement statement = db.getConnection()
@@ -2276,4 +2280,26 @@ public class DatabaseOperations {
     }
 
 
+    public static boolean disableAccountHolder(String cnic) {
+        boolean result = false;
+        try {
+            DatabaseConnection db = new DatabaseConnection();
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_disable_account_holder(?, ?)}");
+
+            statement.setString(1, cnic);
+            statement.registerOutParameter(2, Types.BOOLEAN);
+
+            statement.execute();
+
+            result = statement.getBoolean(2);
+
+            statement.close();
+            db.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while disabling account holder: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while disabling account holder: {}", e.getMessage(), e);
+        }
+        return result;
+    }
 }

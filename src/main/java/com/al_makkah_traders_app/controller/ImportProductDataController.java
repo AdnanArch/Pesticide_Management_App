@@ -56,7 +56,7 @@ public class ImportProductDataController {
             }
         } catch (Exception e) {
             // Log the exception for debugging purposes
-            log.error("Error inserting product(s): " + e.getMessage(), e);
+            log.error("Error inserting product(s): {}", e.getMessage(), e);
 
             // Show a user-friendly error message
             MessageDialogs.showErrorMessage("An error occurred while inserting product(s).");
@@ -73,6 +73,10 @@ public class ImportProductDataController {
             productTableView.getItems().clear();
 
             for (Row row : sheet) {
+                // Check if the row is empty
+                if (row.getCell(0) == null || row.getCell(0).getStringCellValue().isEmpty()) {
+                    continue; // Skip this iteration if the row is empty
+                }
                 Product product = new Product();
 
                 // add these items to table view
@@ -90,14 +94,14 @@ public class ImportProductDataController {
 
                 // these items are not added in table view.
                 product.setAddress(row.getCell(8).getStringCellValue());
-                product.setContact(row.getCell(9).getStringCellValue());
+                product.setContact(String.valueOf(row.getCell(9).getNumericCellValue()));
             }
         } catch (IOException e) {
-            log.error("Error reading Excel file: " + e.getMessage(), e);
+            log.error("Error reading Excel file: {}", e.getMessage(), e);
             // Show a user-friendly error message
             MessageDialogs.showErrorMessage("An error occurred while reading the Excel file.");
         } catch (Exception e) {
-            log.error("Error populating table view: " + e.getMessage(), e);
+            log.error("Error populating table view: {}", e.getMessage(), e);
             // Show a user-friendly error message
             MessageDialogs.showErrorMessage("An error occurred while populating the table view.");
         }

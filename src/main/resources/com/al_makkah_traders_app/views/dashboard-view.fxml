@@ -29,6 +29,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#emptyBillMenuItem" text="Deposit / Withdrawal" />
                         <MenuItem mnemonicParsing="false" onAction="#onPettyCashPaymentMenuItem" text="Petty Cash Payments" />
                   <MenuItem mnemonicParsing="false" onAction="#onPendingPaymentMenuItem" text="Pending Cheques" />
+                  <MenuItem mnemonicParsing="false" onAction="#onInterBankFundTransfer" text="Inter Bank Fund Transfer" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Stock">

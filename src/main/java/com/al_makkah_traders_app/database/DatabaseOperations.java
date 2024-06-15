@@ -2302,4 +2302,52 @@ public class DatabaseOperations {
         }
         return result;
     }
+
+    public static double getAccountBalance(String accountNo) {
+        double balance = 0.0;
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            String query = "SELECT balance FROM company_accounts WHERE account_no = ?";
+            PreparedStatement statement = db.getConnection().prepareStatement(query);
+            statement.setString(1, accountNo);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                balance = resultSet.getDouble("balance");
+            }
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while getting account balance: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while getting account balance: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return balance;
+    }
+
+    public static boolean transferAmount(String sendingAccount, String receivingAccount, double amount, String description) {
+        boolean result = false;
+        System.out.println(sendingAccount);
+        System.out.println(receivingAccount);
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_transfer_amount(?, ?, ?, ?, ?)}");
+            statement.setString(1, sendingAccount);
+            statement.setString(2, receivingAccount);
+            statement.setDouble(3, amount);
+            statement.setString(4, description);
+            statement.registerOutParameter(5, Types.BOOLEAN);
+            statement.execute();
+            result = statement.getBoolean(5);
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while transferring amount: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while transferring amount: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return result;
+    }
 }

@@ -312,4 +312,15 @@ public class DashBoardController {
         }
     }
 
+    @FXML
+    void onInterBankFundTransfer(){
+        InterBankFundTransfer interBankFundTransfer = new InterBankFundTransfer();
+        Stage stage = new Stage();
+        try{
+            interBankFundTransfer.start(stage);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
 }

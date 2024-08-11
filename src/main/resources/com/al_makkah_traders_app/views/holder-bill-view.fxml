@@ -63,13 +63,13 @@
                      </font>
                   </Label>
                   <TextField fx:id="quantityTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                  <SearchableComboBox fx:id="productCodeSearchableComboBox" promptText="Select Product" GridPane.columnIndex="3" />
-                  <Label text="Product Name:" GridPane.rowIndex="1">
+                  <SearchableComboBox fx:id="productNameSearchableComboBox" promptText="Select Product" GridPane.columnIndex="3" />
+                  <Label text="Product Code:" GridPane.rowIndex="1">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="productNameTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="productCodeTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Brand:" GridPane.rowIndex="2">
                      <font>
                         <Font size="15.0" />

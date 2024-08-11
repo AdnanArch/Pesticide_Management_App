@@ -7,8 +7,10 @@ import com.al_makkah_traders_app.utility.NumberFormatter;
 import com.al_makkah_traders_app.utility.Utility;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.input.DataFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.DataFormatter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -799,9 +801,9 @@ public class DatabaseOperations {
             statement.close();
             db.close();
         } catch (SQLException e) {
-            logger.error("Error occurred while fetching the products codes from database." + e.getMessage(), e);
+            logger.error("Error occurred while fetching the products codes from database.{}", e.getMessage(), e);
         } catch (Exception e) {
-            logger.error("Unexpected error occurred while fetching the data from the database." + e.getMessage(), e);
+            logger.error("Unexpected error occurred while fetching the data from the database.{}", e.getMessage(), e);
         }
         return productsCodes;
     }
@@ -856,7 +858,7 @@ public class DatabaseOperations {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                productData.add(resultSet.getString("product_name"));
+                productData.add(resultSet.getString("product_code"));
                 productData.add(resultSet.getString("brand"));
                 productData.add(resultSet.getString("company"));
                 productData.add(resultSet.getString("price"));
@@ -950,7 +952,7 @@ public class DatabaseOperations {
         try {
             DatabaseConnection db = new DatabaseConnection();
             CallableStatement statement = db.getConnection().prepareCall(
-                    "{CALL sp_create_purchas_request_with_company(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+                    "{CALL sp_create_purchase_request_with_company(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
 
             double paidBill = Double.parseDouble(paidAmount);
             double totalBill = Double.parseDouble(totalAmount);
@@ -1043,6 +1045,7 @@ public class DatabaseOperations {
 
             String description = Utility.toDescriptionString(cartItems);
 
+            System.out.println("Cart Items: " + Utility.toJsonString(cartItems));
             statement.setString(1, Utility.toJsonString(cartItems)); // Convert ObservableList<Cart> to JSON String
             statement.setDouble(2, totalBill);
             statement.setDouble(3, paidBill);
@@ -1105,7 +1108,7 @@ public class DatabaseOperations {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                productsNames.add(resultSet.getString("product_code"));
+                productsNames.add(resultSet.getString("product_name"));
             }
         } catch (SQLException e) {
             logger.error("SQL Exception occurred while fetching data from database {}", e.getMessage(), e);
@@ -1421,7 +1424,7 @@ public class DatabaseOperations {
                 String vehicleNo = resultSet.getString("vehicle_no");
                 String driverNo = resultSet.getString("driver_no");
 
-                stockArrivalHistory.add(new StockArrival(orderNo, arrivalDate, productName, brandName, companyName,
+                stockArrivalHistory.add(new StockArrival(orderNo, (arrivalDate), productName, brandName, companyName,
                         quantity, whQuantity, shQuantity, vehicleNo, driverNo, dealerName));
             }
         } catch (SQLException e) {
@@ -2021,11 +2024,11 @@ public class DatabaseOperations {
         return result;
     }
 
-    public static boolean addStockDepletion(Integer billNumber, String productCode, float shQuantity, float whQuantity, boolean isWalkInCustomer, boolean isAccountHolder) {
+    public static boolean addStockDepletion(Integer billNumber, String productCode, float shQuantity, float whQuantity, boolean isWalkInCustomer, boolean isAccountHolder, String customerName) {
         boolean result = false;
         try {
             DatabaseConnection db = new DatabaseConnection();
-            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_update_stock(?, ?, ?, ?, ?, ?, ?)}");
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_update_stock(?, ?, ?, ?, ?, ?, ?, ?)}");
 
             statement.setInt(1, billNumber);
             statement.setString(2, productCode);
@@ -2033,11 +2036,12 @@ public class DatabaseOperations {
             statement.setFloat(4, whQuantity);
             statement.setBoolean(5, isWalkInCustomer);
             statement.setBoolean(6, isAccountHolder);
-            statement.registerOutParameter(7, Types.BOOLEAN);
+            statement.setString(7, customerName);
+            statement.registerOutParameter(8, Types.BOOLEAN);
 
             statement.execute();
 
-            result = statement.getBoolean(7);
+            result = statement.getBoolean(8);
 
             statement.close();
             db.close();
@@ -2350,4 +2354,186 @@ public class DatabaseOperations {
         }
         return result;
     }
+
+    public static boolean insertPurchaseReturn(BigInteger holderNo, String accountNumber, String totalBill, ObservableList<Cart> cartItems, double receivedAmount) {
+        boolean result = false;
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_insert_purchase_return(?, ?, ?, ?, ?, ?, ?)}");
+
+            double totalAmount = Double.parseDouble(totalBill);
+            String description = Utility.toDescriptionString(cartItems);
+
+            statement.setLong(1, holderNo.longValue());
+            statement.setString(2, accountNumber);
+            statement.setDouble(3, totalAmount);
+            statement.setString(4, Utility.toJsonString(cartItems));
+            statement.setString(5, description);
+            statement.setDouble(6, receivedAmount);
+            statement.registerOutParameter(7, Types.BOOLEAN);
+
+            statement.execute();
+
+            result = statement.getBoolean(7);
+
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while inserting purchase return: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while inserting purchase return: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return result;
+    }
+
+    public static ObservableList<String> getProductNames() {
+        ObservableList<String> productNames = FXCollections.observableArrayList();
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            CallableStatement statement = db.getConnection().prepareCall("CALL sp_get_product_names()");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                productNames.add(resultSet.getString("product_name"));
+            }
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while getting product names: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while getting product names: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return productNames;
+    }
+
+
+    public static boolean addArrivalEntry(ObservableList<Cart> cartItems) {
+        boolean result = false;
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_add_arrival_entry(?)}");
+            statement.setString(1, Utility.toJsonString(cartItems));
+            result = statement.execute();
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while adding arrival entry: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while adding arrival entry: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return result;
+    }
+
+    public static boolean deductAmountFromBankAccount(String paymentType, String totalBill) {
+        boolean result = false;
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_deduct_amount_from_bank_account(?, ?, ?)}");
+            statement.setString(1, paymentType);
+            statement.setDouble(2, Double.parseDouble(totalBill));
+            statement.registerOutParameter(3, Types.BOOLEAN);
+            statement.execute();
+            result = statement.getBoolean(3);
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while deducting amount from bank account: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while deducting amount from bank account: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return result;
+    }
+
+    public static boolean addAmountToAccountHolder(BigInteger holderNo, ObservableList<Cart> cartItems, String totalBill) {
+        boolean result = false;
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_add_amount_to_account_holder(?, ?, ?)}");
+            statement.setLong(1, holderNo.longValue());
+            statement.setDouble(2, Double.parseDouble(totalBill));
+            statement.registerOutParameter(3, Types.BOOLEAN);
+            statement.execute();
+            result = statement.getBoolean(3);
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while adding amount to account holder: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while adding amount to account holder: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return result;
+    }
+
+    public static boolean addArrivalEntry(ObservableList<Cart> cartItems, BigInteger holderNo) {
+        boolean result = false;
+        DatabaseConnection db = new DatabaseConnection();
+//        String holderName = DatabaseOperations.getWh
+        System.out.println(holderNo);
+        try {
+            for (Cart cart : cartItems) {
+                // Make description
+                CallableStatement statement = db.getConnection().prepareCall("{CALL sp_add_arrival_entry(?, ?, ?)}");
+                statement.setLong(1, holderNo.longValue());
+                statement.setString(2, cart.getProductCode());
+//                statement.setDouble(3, cart.getQuantity());
+                statement.execute();
+                statement.close();
+            }
+
+            // Make description
+            CallableStatement statement = db.getConnection().prepareCall("{CALL sp_add_arrival_entry(?, ?, ?)}");
+
+
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while adding arrival entry: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while adding arrival entry: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return result;
+    }
+
+    public static ObservableList<DebitCredit> getStockReport(String product, String place) {
+        ObservableList<DebitCredit> stockReport = FXCollections.observableArrayList();
+        DatabaseConnection db = new DatabaseConnection();
+        try {
+            CallableStatement statement = db.getConnection().prepareCall("CALL sp_get_stock_report(?, ?)");
+            statement.setString(1, product);
+            statement.setString(2, place);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                String date = resultSet.getString("transaction_date");
+                String description = resultSet.getString("description");
+                double debit = resultSet.getDouble("arrival");
+                double credit = resultSet.getDouble("sale");
+                double balance = resultSet.getDouble("balance");
+                stockReport.add(
+                        new DebitCredit(
+                                date,
+                                NumberFormatter.formatWithCommas(debit),
+                                NumberFormatter.formatWithCommas(credit),
+                                NumberFormatter.formatWithCommas(balance),
+                                description
+                        )
+                );
+            }
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            logger.error("SQL Exception occurred while getting warehouse stock report: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("An Unexpected Error occurred while getting warehouse stock report: {}", e.getMessage(), e);
+        } finally {
+            db.close();
+        }
+        return stockReport;
+    }
+
 }

@@ -3,7 +3,6 @@ package com.al_makkah_traders_app.controller;
 import com.al_makkah_traders_app.database.DatabaseConnection;
 import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.messages.MessageDialogs;
-import com.al_makkah_traders_app.model.AccountHolder;
 import com.al_makkah_traders_app.model.ImportProductsData;
 import com.al_makkah_traders_app.model.Product;
 import javafx.collections.ObservableList;
@@ -346,7 +345,15 @@ public class ProductController {
             row.createCell(6).setCellValue(product.getShopQuantity());
             row.createCell(7).setCellValue(product.getWarehouseQuantity());
             row.createCell(8).setCellValue(product.getAddress());
-            row.createCell(9).setCellValue(product.getContact());
+//            row.createCell(9).setCellValue(Long.parseLong(product.getContact()));
+
+            // Handle contact conversion to avoid NumberFormatException
+            String contact = product.getContact();
+            if (contact != null && contact.matches("\\d+")) {
+                row.createCell(9).setCellValue(Long.parseLong(contact));
+            } else {
+                row.createCell(9).setCellValue(contact);
+            }
         }
 
         // Open a FileChooser to let the user select where to save the file

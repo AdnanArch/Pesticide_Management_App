@@ -19,6 +19,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class ImportProductDataController {
     private static final Logger log = LogManager.getLogger(ImportProductDataController.class);
@@ -94,7 +95,8 @@ public class ImportProductDataController {
 
                 // these items are not added in table view.
                 product.setAddress(row.getCell(8).getStringCellValue());
-                product.setContact(String.valueOf(row.getCell(9).getNumericCellValue()));
+                product.setContact(BigDecimal.valueOf(row.getCell(9).getNumericCellValue()).toPlainString());
+//                product.setContact(String.valueOf(row.getCell(9).getNumericCellValue()));
             }
         } catch (IOException e) {
             log.error("Error reading Excel file: {}", e.getMessage(), e);

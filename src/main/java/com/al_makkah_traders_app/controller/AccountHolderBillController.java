@@ -15,6 +15,8 @@ import org.controlsfx.control.SearchableComboBox;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import static com.al_makkah_traders_app.database.DatabaseOperations.insertAccountHolderBill;
+
 public class AccountHolderBillController {
 
     @FXML
@@ -30,6 +32,9 @@ public class AccountHolderBillController {
     private TextField netBalanceTextField;
 
     @FXML
+    private TextField productCodeTextField;
+
+    @FXML
     private ComboBox<String> paymentTypeComboBox;
 
     @FXML
@@ -39,10 +44,7 @@ public class AccountHolderBillController {
     private TextField priceTextField;
 
     @FXML
-    private SearchableComboBox<String> productCodeSearchableComboBox;
-
-    @FXML
-    private TextField productNameTextField;
+    private SearchableComboBox<String> productNameSearchableComboBox;
 
     @FXML
     private TextField quantityTextField;
@@ -57,16 +59,18 @@ public class AccountHolderBillController {
 
     public void initialize() {
         // set text fields to editable false
-        productNameTextField.setEditable(false);
+        productCodeTextField.setEditable(false);
         brandNameTextField.setEditable(false);
         totalBillTextField.setEditable(false);
         previousBalanceTextField.setEditable(false);
         netBalanceTextField.setEditable(false);
 
+
         // initialize the cartItems to an empty list
         cartItems = FXCollections.observableArrayList();
 
-        populateProductCodeComboBox();
+        // TODO: Version 2.0 changing the product code to product Name.
+        populateProductNameComboBox();
         populateAccountHolderComboBox();
         populatePaymentTypeComboBox();
         addCartTableSelectionListener(cartTableView);
@@ -75,7 +79,7 @@ public class AccountHolderBillController {
 
         // Add a listener to productCodeComboBox to populate data when a product is
         // selected
-        productCodeSearchableComboBox.getSelectionModel().selectedItemProperty()
+        productNameSearchableComboBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         getProductDetails(newValue);
@@ -113,30 +117,30 @@ public class AccountHolderBillController {
     }
 
     private void fillFormFields(Cart cartItem) {
-        productCodeSearchableComboBox.setValue(cartItem.getProductCode());
-        productNameTextField.setText(cartItem.getProductName());
+        productNameSearchableComboBox.setValue(cartItem.getProductName());
+        productCodeTextField.setText(cartItem.getProductCode());
         brandNameTextField.setText(cartItem.getBrandName());
         priceTextField.setText(String.valueOf(NumberFormatter.removeCommas(cartItem.getPricePerUnit())));
         quantityTextField.setText(String.valueOf(cartItem.getQuantity()));
     }
 
-    private void getProductDetails(String productCode) {
-        ArrayList<String> productDetails = DatabaseOperations.getProductDetails(productCode);
-        productNameTextField.setText(productDetails.get(0));
+    private void getProductDetails(String productName) {
+        ArrayList<String> productDetails = DatabaseOperations.getProductDetails(productName);
+        productCodeTextField.setText(productDetails.get(0));
         brandNameTextField.setText(productDetails.get(1));
         priceTextField.setText(productDetails.get(3));
     }
 
-    private void populateProductCodeComboBox() {
-        ObservableList<String> products = DatabaseOperations.getProductsCodes();
-        productCodeSearchableComboBox.setItems(products);
+    private void populateProductNameComboBox() {
+        ObservableList<String> products = DatabaseOperations.getProductNames();
+        productNameSearchableComboBox.setItems(products);
     }
 
     @FXML
     void onAddCartItem() {
         // Get the values from the text fields
-        String productCode = productCodeSearchableComboBox.getValue();
-        String productName = productNameTextField.getText();
+        String productName = productNameSearchableComboBox.getValue();
+        String productCode = productCodeTextField.getText();
         String brandName = brandNameTextField.getText();
         String price = priceTextField.getText();
         String quantity = quantityTextField.getText();
@@ -164,8 +168,8 @@ public class AccountHolderBillController {
         // Check if a cart item is selected
         Cart selectedCartItem = cartTableView.getSelectionModel().getSelectedItem();
 
-        String productCode = productCodeSearchableComboBox.getValue();
-        String productName = productNameTextField.getText();
+        String productName = productNameSearchableComboBox.getValue();
+        String productCode = productCodeTextField.getText();
         String brandName = brandNameTextField.getText();
         String quantityText = quantityTextField.getText();
         String priceText = priceTextField.getText();
@@ -243,7 +247,7 @@ public class AccountHolderBillController {
         }
 
         // insert the account-holder-bill into the database
-        BillCreationResult isInserted = DatabaseOperations.insertAccountHolderBill(holderNo, accountNumber, totalBill, cartItems, receivedAmount);
+        BillCreationResult isInserted = insertAccountHolderBill(holderNo, accountNumber, totalBill, cartItems, receivedAmount);
 
 
         if (isInserted.isSuccess()) {
@@ -284,8 +288,8 @@ public class AccountHolderBillController {
     }
 
     private void clearInputFields() {
-        productCodeSearchableComboBox.setValue(null);
-        productNameTextField.clear();
+        productNameSearchableComboBox.setValue(null);
+        productCodeTextField.clear();
         brandNameTextField.clear();
         priceTextField.clear();
         quantityTextField.clear();

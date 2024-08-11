@@ -10,23 +10,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox spacing="20.0" styleClass="gradient" stylesheets="@../stylesheets/style.css"
-   xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-   fx:controller="com.al_makkah_traders_app.controller.ImportProductDataController">
+<VBox spacing="20.0" styleClass="gradient" stylesheets="@../stylesheets/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.al_makkah_traders_app.controller.ImportProductDataController">
    <children>
       <HBox alignment="CENTER">
          <children>
-            <Label text="Import Data From Excel" textFill="WHITE">
+            <Label text="Import Products Data From Excel" textFill="WHITE">
                <font>
                   <Font name="Berlin Sans FB Demi Bold" size="30.0" />
                </font>
             </Label>
          </children>
       </HBox>
-      <VBox alignment="CENTER" styleClass="right-form" stylesheets="@../stylesheets/style.css">
+      <VBox alignment="CENTER" styleClass="right-form" stylesheets="@../stylesheets/style.css" VBox.vgrow="ALWAYS">
          <children>
-            <TableView fx:id="productTableView" maxHeight="1.7976931348623157E308"
-               maxWidth="1.7976931348623157E308" stylesheets="@../stylesheets/style.css">
+            <TableView fx:id="productTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../stylesheets/style.css" VBox.vgrow="ALWAYS">
                <columns>
                   <TableColumn prefWidth="75.0" text="Code">
                      <cellValueFactory>
@@ -73,22 +70,17 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
                <VBox.margin>
-                  <Insets />
+                  <Insets top="10.0" />
                </VBox.margin>
             </TableView>
-            <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308"
-               maxWidth="1.7976931348623157E308" spacing="20.0">
+            <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#onImportButton" text="Import" />
-                  <Button mnemonicParsing="false" onAction="#onInsert" prefWidth="61.0"
-                     text="Insert" />
+                  <Button mnemonicParsing="false" onAction="#onInsert" prefWidth="61.0" text="Insert" />
                </children>
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
-               <padding>
-                  <Insets bottom="-20.0" />
-               </padding>
             </HBox>
          </children>
          <VBox.margin>

@@ -3,6 +3,7 @@ package com.al_makkah_traders_app.controller;
 import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.CompanyAccount;
+import com.al_makkah_traders_app.utility.NumberFormatter;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableRow;
@@ -153,7 +154,7 @@ public class CompanyAccountController {
             accountNoTextField.setText(account.getAccountNo());
             accountHolderNameTextField.setText(account.getAccountHolderName());
             bankNameTextField.setText(account.getBankName());
-            balanceTextField.setText((account.getTotalBalance()));
+            balanceTextField.setText(String.valueOf(NumberFormatter.removeCommas(account.getTotalBalance())));
         }
     }
 

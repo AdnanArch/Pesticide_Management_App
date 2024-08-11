@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -17,19 +19,19 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.SearchableComboBox?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="left-form" stylesheets="@../stylesheets/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.al_makkah_traders_app.controller.WalkInBillController">
+<BorderPane styleClass="left-form" stylesheets="@../stylesheets/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.al_makkah_traders_app.controller.StockReturnController">
     <top>
-        <Label text="Walk in Bill" textFill="WHITE" BorderPane.alignment="CENTER">
+        <Label text="Stock Return" textFill="WHITE" BorderPane.alignment="CENTER">
             <font>
                 <Font name="Berlin Sans FB Demi Bold" size="30.0" />
             </font>
         </Label>
     </top>
-    <padding>
-        <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
-    </padding>
     <center>
-        <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0" styleClass="panel-view" stylesheets="@../stylesheets/style.css" BorderPane.alignment="CENTER">
+        <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="panel-view" stylesheets="@../stylesheets/style.css" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
+            </BorderPane.margin>
             <children>
                 <GridPane hgap="20.0" vgap="35.0">
                     <columnConstraints>
@@ -42,9 +44,10 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Label text="Add Product:">
+                        <Label text="Select Customer:" GridPane.columnIndex="2">
                             <font>
                                 <Font size="15.0" />
                             </font>
@@ -61,38 +64,50 @@
                             </font>
                         </Label>
                         <TextField fx:id="quantityTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                        <SearchableComboBox fx:id="productNameSearchableComboBox" promptText="Select Product" GridPane.columnIndex="1" />
-                        <Label text="Product Code:" GridPane.columnIndex="2">
+                        <SearchableComboBox fx:id="accountHolderComboBox" promptText="Select Customer" GridPane.columnIndex="3" />
+                        <Label text="Add Product" GridPane.rowIndex="1">
                             <font>
                                 <Font size="15.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="productCodeTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="3" />
-                        <Label text="Brand:" GridPane.rowIndex="1">
+                        <Label text="Brand:" GridPane.rowIndex="2">
                             <font>
                                 <Font size="15.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="brandNameTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="brandNameTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="Customer Type:">
+                            <font>
+                                <Font size="15.0" />
+                            </font>
+                        </Label>
+                        <SearchableComboBox fx:id="customerTypeComboBox" promptText="Select Type" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" />
+                  <SearchableComboBox fx:id="productNameSearchableComboBox" promptText="Select Product" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Product Code:" GridPane.rowIndex="3">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="productCodeTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                     </children>
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
                 </GridPane>
-                <HBox alignment="CENTER_RIGHT" spacing="20.0" VBox.vgrow="ALWAYS">
+                <HBox alignment="TOP_RIGHT" spacing="20.0">
                     <children>
-                        <Button mnemonicParsing="false" onAction="#onAddCartItem" prefWidth="70.0" text="Add" />
-                        <Button mnemonicParsing="false" onAction="#onUpdateCartItem" prefWidth="70.0" text="Update" />
-                        <Button mnemonicParsing="false" onAction="#onDeleteCartItem" prefWidth="70.0" text="Delete" />
+                        <Button mnemonicParsing="false" onAction="#onAddCartItem" prefWidth="65.0" text="Add" />
+                        <Button mnemonicParsing="false" onAction="#onUpdateCartItem" text="Update" />
+                        <Button mnemonicParsing="false" onAction="#onDeleteCartItem" prefWidth="65.0" text="Delete" />
                     </children>
                     <VBox.margin>
                         <Insets top="10.0" />
                     </VBox.margin>
                 </HBox>
-                <Label alignment="TOP_LEFT" text="Cart" textFill="#14b8a6">
+                <Label text="Cart" textFill="#14b8a6">
                     <font>
                         <Font name="Berlin Sans FB Demi Bold" size="25.0" />
                     </font>
-                    <VBox.margin>
-                        <Insets top="5.0" />
-                    </VBox.margin>
                 </Label>
                 <TableView fx:id="cartTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../stylesheets/style.css">
                     <columns>
@@ -133,12 +148,12 @@
                 </TableView>
                 <HBox alignment="CENTER_RIGHT" spacing="20.0">
                     <children>
-                        <Label text="Total Bill:">
+                        <Label text="Total Bill">
                             <font>
                                 <Font size="15.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="totalBillTextField" prefHeight="26.0" prefWidth="157.0" styleClass="text-field" stylesheets="@../stylesheets/style.css" />
+                        <TextField fx:id="totalBillTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" />
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" spacing="20.0">
@@ -148,38 +163,50 @@
                                 <Font size="15.0" />
                             </font>
                         </Label>
-                        <ComboBox fx:id="paymentMethodSearchableComboBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="157.0" promptText="Payment Method" styleClass="combo-box-focused" stylesheets="@../stylesheets/style.css">
-                            <!--                     <items>-->
-                            <!--                        <FXCollections fx:factory="observableArrayList">-->
-                            <!--                           <String fx:value="Cash" />-->
-                            <!--                           <String fx:value="Online" />-->
-                            <!--                        </FXCollections>-->
-                            <!--                     </items>-->
+                        <ComboBox fx:id="paymentTypeComboBox" prefWidth="157.0" promptText="Select Method" styleClass="combo-box-focused" stylesheets="@../stylesheets/style.css">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Cash" />
+                                    <String fx:value="Online" />
+                                    <String fx:value="Cheque" />
+                                    <String fx:value="Bank Draft" />
+                                </FXCollections>
+                            </items>
                         </ComboBox>
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" spacing="20.0">
                     <children>
-                        <Label text="Customer Name:">
+                        <Label text="Previous Balance">
                             <font>
                                 <Font size="15.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="customerNameTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" />
+                        <TextField fx:id="previousBalanceTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" />
                     </children>
                 </HBox>
                 <HBox alignment="CENTER_RIGHT" spacing="20.0">
                     <children>
-                        <Button fx:id="printBillButton" mnemonicParsing="false" onAction="#onPrintBillButtonAction" text="Print Bill" />
+                        <Label text="Net Balance">
+                            <font>
+                                <Font size="15.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="netBalanceTextField" styleClass="text-field" stylesheets="@../stylesheets/style.css" />
+                    </children>
+                </HBox>
+                <HBox alignment="TOP_RIGHT" spacing="20.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#onPurchaseReturn" stylesheets="@../stylesheets/style.css" text="Submit" />
                     </children>
                 </HBox>
             </children>
             <padding>
-                <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+                <Insets bottom="20.0" left="30.0" right="30.0" top="10.0" />
             </padding>
-            <BorderPane.margin>
-                <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
-            </BorderPane.margin>
         </VBox>
     </center>
+    <padding>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
+    </padding>
 </BorderPane>

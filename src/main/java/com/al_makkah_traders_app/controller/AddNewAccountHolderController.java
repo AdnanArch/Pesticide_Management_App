@@ -252,7 +252,7 @@ public class AddNewAccountHolderController {
 
         // Create a header row and populate it with column names
         Row headerRow = sheet.createRow(0);
-        List<String> columnNames = Arrays.asList("Name", "CNIC", "Address", "Phone", "Is Retailer", "Debit/Credit", "Balance");
+        List<String> columnNames = Arrays.asList("Name", "CNIC", "Address", "Phone", "Is Retailer", "Balance");
         for (int i = 0; i < columnNames.size(); i++) {
             Cell headerCell = headerRow.createCell(i);
             headerCell.setCellValue(columnNames.get(i));
@@ -268,9 +268,12 @@ public class AddNewAccountHolderController {
             row.createCell(1).setCellValue(accountHolder.getCnicNo());
             row.createCell(2).setCellValue(accountHolder.getAddress());
             row.createCell(3).setCellValue(accountHolder.getPhone());
-            row.createCell(4).setCellValue(accountHolder.isRetailerProperty().get());
-            row.createCell(5).setCellValue(accountHolder.getDebitOrCredit());
-            row.createCell(6).setCellValue(accountHolder.getTotalBalance());
+            row.createCell(4).setCellValue(accountHolder.isRetailer());
+            if (accountHolder.getDebitOrCredit().equals("Debit")) {
+                row.createCell(5).setCellValue(NumberFormatter.removeCommas(accountHolder.getTotalBalance()));
+            } else {
+                row.createCell(5).setCellValue(-NumberFormatter.removeCommas(accountHolder.getTotalBalance()));
+            }
         }
 
         // Open a FileChooser to let the user select where to save the file

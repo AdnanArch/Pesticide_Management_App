@@ -272,4 +272,46 @@ WHERE
   AND c.company_name LIKE '%company_name%'
   AND st.from_place LIKE '%from_place%'
   AND st.to_place LIKE '%to_place%';
+
+
+CREATE TABLE product_ledger (
+                                transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+                                product_code VARCHAR(30) NOT NULL,
+                                transaction_type ENUM('a', 's') NOT NULL,
+                                quantity INT NOT NULL,
+                                location_type ENUM('s', 'w') NOT NULL,
+                                `description` TEXT,
+                                transaction_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+                                FOREIGN KEY (product_code) REFERENCES products(product_code)
+);
+
+
+CREATE FUNCTION generate_unique_13_digit_number(tableName VARCHAR(255), columnName VARCHAR(255))
+    RETURNS BIGINT
+    READS SQL DATA
+BEGIN
+    DECLARE newNumber BIGINT;
+    DECLARE isUnique BOOLEAN DEFAULT FALSE;
+
+    WHILE isUnique = FALSE DO
+            -- Generate a random 13-digit number
+            SET newNumber = FLOOR(RAND() * 10000000000000);
+
+            -- Ensure the number is 13 digits by checking the length
+            IF LENGTH(newNumber) = 13 THEN
+                -- Check if the generated number already exists in the provided table and column
+                SET isUnique = NOT EXISTS (
+                    SELECT 1
+                    FROM (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = tableName AND COLUMN_NAME = columnName) AS c
+                    WHERE CAST(newNumber AS CHAR(13)) = CAST(columnName AS CHAR(13))
+                );
+            END IF;
+        END WHILE;
+
+    RETURN newNumber;
+END
+
+
+SELECT generate_unique_13_digit_number('account_holders', 'cnic_no') AS uniqueNumber;
   

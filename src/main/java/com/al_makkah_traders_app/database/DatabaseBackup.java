@@ -28,11 +28,14 @@ public class DatabaseBackup {
 
     private static void executeBackup(String databaseName, String mysqlUsername, String mysqlPassword, String backupFilePath) {
         String mysqldumpPath = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqldump"; // Full path to mysqldump
+        String mysqlPort = "3308"; // Specify your MySQL port
+//        String mysqlPort = "3306"; // Specify your MySQL port
 
         ProcessBuilder processBuilder = new ProcessBuilder(
                 mysqldumpPath,
                 "-u" + mysqlUsername,
                 "-p" + mysqlPassword,
+                "--port=" + mysqlPort,
                 "--routines",
                 "--triggers",
                 "--add-drop-database",
@@ -53,6 +56,4 @@ public class DatabaseBackup {
             throw new RuntimeException(e);
         }
     }
-
-
 }

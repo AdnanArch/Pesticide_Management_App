@@ -24,36 +24,37 @@ public class WalkInBillController {
     @FXML
     private TextField priceTextField;
     @FXML
-    private SearchableComboBox<String> productCodeSearchableComboBox;
+    private SearchableComboBox<String> productNameSearchableComboBox;
     @FXML
     private TextField quantityTextField;
     @FXML
     private TextField totalBillTextField;
     private ObservableList<Cart> cartItems;
     @FXML
-    private TextField productNameTextField;
+    private TextField productCodeTextField;
     @FXML
     private TextField brandNameTextField;
 
     public void initialize() {
         // set text fields to editable false
-        productNameTextField.setEditable(false);
+        productCodeTextField.setEditable(false);
         brandNameTextField.setEditable(false);
         totalBillTextField.setEditable(false);
 
         // initialize the cartItems to an empty list
         cartItems = FXCollections.observableArrayList();
 
-        populateProductCodeComboBox();
+        populateProductNameComboBox();
         addCartTableSelectionListener(cartTableView);
         // populate the paymentMethodComboBox get it from the database
         paymentMethodSearchableComboBox.setItems(DatabaseOperations.getCompanyBankAccounts());
 
         // Add a listener to productCodeComboBox to populate data when a product is
         // selected
-        productCodeSearchableComboBox.getSelectionModel().selectedItemProperty()
+        productNameSearchableComboBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
+//                        getProductDetails(Utility.extractProductCodeForBill(newValue));
                         getProductDetails(newValue);
                     }
                 });
@@ -69,8 +70,8 @@ public class WalkInBillController {
     }
 
     private void fillFormFields(Cart cartItem) {
-        productCodeSearchableComboBox.setValue(cartItem.getProductCode());
-        productNameTextField.setText(cartItem.getProductName());
+        productNameSearchableComboBox.setValue(cartItem.getProductName());
+        productCodeTextField.setText(cartItem.getProductCode());
         brandNameTextField.setText(cartItem.getBrandName());
         priceTextField.setText(String.valueOf(NumberFormatter.removeCommas(cartItem.getTotalPrice())));
         quantityTextField.setText(String.valueOf(cartItem.getQuantity()));
@@ -78,21 +79,21 @@ public class WalkInBillController {
 
     private void getProductDetails(String productCode) {
         ArrayList<String> productDetails = DatabaseOperations.getProductDetails(productCode);
-        productNameTextField.setText(productDetails.get(0));
+        productCodeTextField.setText(productDetails.get(0));
         brandNameTextField.setText(productDetails.get(1));
         priceTextField.setText(productDetails.get(3));
     }
 
-    private void populateProductCodeComboBox() {
-        ObservableList<String> products = DatabaseOperations.getProductsCodes();
-        productCodeSearchableComboBox.setItems(products);
+    private void populateProductNameComboBox() {
+        ObservableList<String> products = DatabaseOperations.getProductNames();
+        productNameSearchableComboBox.setItems(products);
     }
 
     @FXML
     void onAddCartItem() {
         // Get the values from the text fields
-        String productCode = productCodeSearchableComboBox.getValue();
-        String productName = productNameTextField.getText();
+        String productName = productNameSearchableComboBox.getValue();
+        String productCode = productCodeTextField.getText();
         String brandName = brandNameTextField.getText();
         String price = priceTextField.getText();
         String quantity = quantityTextField.getText();
@@ -120,8 +121,8 @@ public class WalkInBillController {
         // Check if a cart item is selected
         Cart selectedCartItem = cartTableView.getSelectionModel().getSelectedItem();
 
-        String productCode = productCodeSearchableComboBox.getValue();
-        String productName = productNameTextField.getText();
+        String productName = productNameSearchableComboBox.getValue();
+        String productCode = productCodeTextField.getText();
         String brandName = brandNameTextField.getText();
         String quantityText = quantityTextField.getText();
         String priceText = priceTextField.getText();
@@ -214,7 +215,7 @@ public class WalkInBillController {
                     false,
                     "",
                     isInserted.getBillId()
-                    );
+            );
 
             // Print the receipt
             receiptPrinter.printReceipt();
@@ -229,8 +230,8 @@ public class WalkInBillController {
     }
 
     private void clearInputFields() {
-        productCodeSearchableComboBox.setValue(null);
-        productNameTextField.clear();
+        productNameSearchableComboBox.setValue(null);
+        productCodeTextField.clear();
         brandNameTextField.clear();
         priceTextField.clear();
         quantityTextField.clear();

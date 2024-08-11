@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.al_makkah_traders_app.utility.CartUtility.removeCommasFromCartItems;
+import static com.al_makkah_traders_app.utility.Utility.extractAccountNumber;
 
 public class PurchaseRequestController {
     ObservableList<Cart> cartItems;
@@ -46,9 +47,9 @@ public class PurchaseRequestController {
     @FXML
     private TextField priceTextField;
     @FXML
-    private SearchableComboBox<String> productCodeSearchableComboBox;
+    private SearchableComboBox<String> productNameSearchableComboBox;
     @FXML
-    private TextField productNameTextField;
+    private TextField productCodeTextField;
     @FXML
     private TableView<PurchaseRequest> purchaseRequestTableView;
     @FXML
@@ -68,7 +69,7 @@ public class PurchaseRequestController {
         populateCompaniesSearchableComboBox();
 
         // set fields edit property to false.
-        productNameTextField.setEditable(false);
+        productCodeTextField.setEditable(false);
         brandNameTextField.setEditable(false);
         totalAmountTextField.setEditable(false);
 
@@ -81,7 +82,7 @@ public class PurchaseRequestController {
 
         // Add a listener to productCodeComboBox to populate data when a product is
         // selected
-        productCodeSearchableComboBox.getSelectionModel().selectedItemProperty()
+        productNameSearchableComboBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         getProductDetails(newValue);
@@ -127,7 +128,7 @@ public class PurchaseRequestController {
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         ObservableList<String> products = DatabaseOperations.getProductsByCompany(newValue);
-                        productCodeSearchableComboBox.setItems(products);
+                        productNameSearchableComboBox.setItems(products);
                     }
                 });
 
@@ -166,7 +167,7 @@ public class PurchaseRequestController {
 
     private void getProductDetails(String productCode) {
         ArrayList<String> productData = DatabaseOperations.getProductDetails(productCode);
-        productNameTextField.setText(productData.get(0));
+        productCodeTextField.setText(productData.get(0));
         brandNameTextField.setText(productData.get(1));
         companySearchableComboBox.setValue(productData.get(2));
         priceTextField.setText(productData.get(3));
@@ -174,14 +175,14 @@ public class PurchaseRequestController {
 
     private void populateProductCodeComboBox() {
         ObservableList<String> productsCodes = DatabaseOperations.getProductsCodes();
-        productCodeSearchableComboBox.setItems(productsCodes);
+        productNameSearchableComboBox.setItems(productsCodes);
     }
 
     @FXML
     void onAddToCart() {
         // use the cartUtility class to add the item to the cartItems
-        String productCode = productCodeSearchableComboBox.getValue();
-        String productName = productNameTextField.getText();
+        String productName = productNameSearchableComboBox.getValue();
+        String productCode = productCodeTextField.getText();
         String brandName = brandNameTextField.getText();
         String quantity = quantityTextField.getText();
         String price = priceTextField.getText();
@@ -216,8 +217,8 @@ public class PurchaseRequestController {
         Cart selectedCartItem = cartTableView.getSelectionModel().getSelectedItem();
 
         // Get the values from the text fields
-        String productCode = productCodeSearchableComboBox.getValue();
-        String productName = productNameTextField.getText();
+        String productCode = productNameSearchableComboBox.getValue();
+        String productName = productCodeTextField.getText();
         String brandName = brandNameTextField.getText();
         String quantity = quantityTextField.getText();
         String price = priceTextField.getText();
@@ -244,6 +245,7 @@ public class PurchaseRequestController {
         Cart selectedCartItem = cartTableView.getSelectionModel().getSelectedItem();
         boolean deleted = CartUtility.deleteCartItem(cartItems, selectedCartItem);
         if (deleted) {
+            clearInputFields();
             // Update the totalAmountTextField by recalculating the total amount
             updateTotalAmountTextField();
             // Refresh the cart table view
@@ -294,20 +296,19 @@ public class PurchaseRequestController {
         String accountNo = null;
 
         boolean isCorrectData;
-
         String paymentStatus = "Completed";
 
         if (partyType == null) {
             MessageDialogs.showErrorMessage("Please Select a party type.");
         } else {
-            boolean incorrectAmount = Double.parseDouble(paidAmount) > Double.parseDouble(totalAmount);
+            boolean incorrectAmount = Double.parseDouble(paidAmount) > Double.parseDouble(totalAmount) || Double.parseDouble(paidAmount) < 0;
             if (partyType.equals("Company")) {
                 String requestType = requestTypeComboBox.getValue();
-                Integer sourceId = DatabaseOperations.getCompanyId(productCodeSearchableComboBox.getValue());
+                Integer sourceId = DatabaseOperations.getCompanyId(productNameSearchableComboBox.getValue());
                 isCorrectData = checkRequestFieldsAreCorrectForCompanyOrder(requestType, paymentType, totalAmount,
                         paidAmount);
                 String bookingType = requestType.equals("Plant Booking") ? "pb" : "wb";
-    
+
                 if (isCorrectData) {
                     switch (paymentType) {
                         case "Online", "Cheque", "Bank Draft" -> {
@@ -315,7 +316,7 @@ public class PurchaseRequestController {
                                 MessageDialogs.showWarningMessage("Please select a bank account.");
                                 return;
                             }
-                            accountNo = Utility.extractAccountNumber(bankAccountNo);
+                            accountNo = extractAccountNumber(bankAccountNo);
                         }
                         case "Cash" -> accountNo = "0000-000000";
                     }
@@ -324,24 +325,30 @@ public class PurchaseRequestController {
                         MessageDialogs.showWarningMessage("Paid amount cannot be greater than total amount.");
                         return;
                     }
+                    // bug fix for insufficient balance
+                    if (Double.parseDouble(paidAmount) > DatabaseOperations.getAccountBalance(accountNo)) {
+                        MessageDialogs.showWarningMessage("Insufficient balance in the selected account.");
+                        return;
+                    }
+
                     boolean requestSubmitted = DatabaseOperations.submitRequestToCompany(removeCommasFromCartItems(cartItems), totalAmount, paidAmount,
                             bookingType, paymentType, accountNo, sourceId);
                     if (requestSubmitted) {
                         MessageDialogs.showMessageDialog("Your request has been submitted successfully.");
                         clearForm();
                     } else {
-                        MessageDialogs.showErrorMessage("An error occurred while submitting the request.\n" +
-                                "Check the input data or may be your account balance is insufficient.");
+                        MessageDialogs.showErrorMessage("An error occurred while submitting the request.");
+//                        clearForm();
                     }
                 }
             } else if (partyType.equals("Wholesaler")) {
                 String partyName = dealerNameSearchableComboBox.getValue();
                 String freightAmount = freightTextField.getText();
                 BigInteger sourceId = DatabaseOperations.getWholesalerId(partyName);
-    
+
                 isCorrectData = checkRequestFieldsAreCorrectForWholesalerOrder(partyName, paymentType, totalAmount,
                         paidAmount, freightAmount);
-    
+
                 if (isCorrectData) {
                     switch (paymentType) {
                         case "Online", "Cheque", "Bank Draft" -> {
@@ -349,7 +356,7 @@ public class PurchaseRequestController {
                                 MessageDialogs.showWarningMessage("Please select a bank account.");
                                 return;
                             }
-                            accountNo = Utility.extractAccountNumber(bankAccountNo);
+                            accountNo = extractAccountNumber(bankAccountNo);
                         }
                         case "Cash" -> accountNo = "0000-000000";
                         case "Post Payment" -> paymentStatus = "Pending";
@@ -359,9 +366,13 @@ public class PurchaseRequestController {
                         MessageDialogs.showWarningMessage("Paid amount cannot be greater than total amount.");
                         return;
                     }
-                    boolean requestSubmitted = DatabaseOperations.submitRequestToWholesaler(cartItems, totalAmount,
+                    if (Double.parseDouble(paidAmount) > DatabaseOperations.getAccountBalance(accountNo)) {
+                        MessageDialogs.showWarningMessage("Insufficient balance in the selected account.");
+                        return;
+                    }
+                    boolean requestSubmitted = DatabaseOperations.submitRequestToWholesaler(removeCommasFromCartItems(cartItems), totalAmount,
                             paymentType, accountNo, partyType, sourceId, paymentStatus, paidAmount, freightAmount);
-    
+
                     if (requestSubmitted) {
                         MessageDialogs.showMessageDialog("Your request has been submitted successfully.");
                         clearForm();
@@ -417,15 +428,15 @@ public class PurchaseRequestController {
     }
 
     private void clearInputFields() {
-        productNameTextField.clear();
+        productCodeTextField.clear();
         brandNameTextField.clear();
         quantityTextField.clear();
         priceTextField.clear();
     }
 
     private void fillFormFields(Cart selectedCartItem) {
-        productCodeSearchableComboBox.setValue(selectedCartItem.getProductCode());
-        productNameTextField.setText(selectedCartItem.getProductName());
+        productNameSearchableComboBox.setValue(selectedCartItem.getProductName());
+        productCodeTextField.setText(selectedCartItem.getProductCode());
         brandNameTextField.setText(selectedCartItem.getBrandName());
         priceTextField.setText(String.valueOf(NumberFormatter.removeCommas(selectedCartItem.getPricePerUnit())));
         quantityTextField.setText(String.valueOf(selectedCartItem.getQuantity()));

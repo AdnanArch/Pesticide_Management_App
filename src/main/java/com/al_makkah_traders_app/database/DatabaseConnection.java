@@ -10,6 +10,7 @@ import java.sql.SQLException;
 public class DatabaseConnection {
     private static final Logger logger = LogManager.getLogger(DatabaseConnection.class);
 
+//    private static final String DB_URL = "jdbc:mysql://localhost:3308/al_makkah_db?characterEncoding=latin1";
     private static final String DB_URL = "jdbc:mysql://localhost:3306/al_makkah_db?characterEncoding=latin1";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "admin";

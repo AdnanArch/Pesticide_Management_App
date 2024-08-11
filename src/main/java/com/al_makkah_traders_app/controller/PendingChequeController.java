@@ -3,6 +3,7 @@ package com.al_makkah_traders_app.controller;
 import com.al_makkah_traders_app.database.DatabaseOperations;
 import com.al_makkah_traders_app.messages.MessageDialogs;
 import com.al_makkah_traders_app.model.PendingCheque;
+import com.al_makkah_traders_app.utility.NumberFormatter;
 import com.al_makkah_traders_app.utility.Utility;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -91,7 +92,7 @@ public class PendingChequeController {
     public void fillFormFields(PendingCheque pendingCheque) {
         chequeNoComboBox.setValue(pendingCheque.getChequeNo());
         paymentTypeTextField.setText(pendingCheque.getPaymentType());
-        amountTextField.setText(pendingCheque.getAmount());
+        amountTextField.setText(String.valueOf(NumberFormatter.removeCommas(pendingCheque.getAmount())));
     }
 
 

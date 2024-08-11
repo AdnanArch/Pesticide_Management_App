@@ -32,6 +32,10 @@ public class Utility {
         return strings[0].trim();
     }
 
+    public static String extractProductCodeForBill(String inputString) {
+        String[] strings = inputString.split(" -> ");
+        return strings[1].trim();
+    }
     /**
      * Converts an ObservableList of Cart items to a JSON String.
      *

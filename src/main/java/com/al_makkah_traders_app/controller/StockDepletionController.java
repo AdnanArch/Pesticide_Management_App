@@ -96,7 +96,10 @@ public class StockDepletionController {
                 isAccountHolder = false;
                 isWalkInCustomer = true;
             }
-            boolean isAdded = DatabaseOperations.addStockDepletion(billNumber, productCode, shQuantity, whQuantity, isWalkInCustomer, isAccountHolder);
+            // Remove prefix from customer name
+            customerName = customerName.substring(3);
+            System.out.println("Customer Name: " + customerName);
+            boolean isAdded = DatabaseOperations.addStockDepletion(billNumber, productCode, shQuantity, whQuantity, isWalkInCustomer, isAccountHolder, customerName);
 
             if (isAdded) {
                 MessageDialogs.showMessageDialog("Stock depletion added successfully");
@@ -104,6 +107,7 @@ public class StockDepletionController {
                 clearFields();
             } else {
                 MessageDialogs.showMessageDialog("Stock depletion could not be added");
+                populateAccountHolderTableView();
             }
         }else{
             MessageDialogs.showWarningMessage("Please clear the over invoice first");
@@ -118,7 +122,7 @@ public class StockDepletionController {
 
     @FXML
     void onRefresh() {
-
+        populateAccountHolderTableView();
     }
 
     @FXML

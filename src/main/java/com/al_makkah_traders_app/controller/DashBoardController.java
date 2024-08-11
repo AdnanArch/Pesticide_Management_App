@@ -80,27 +80,29 @@ public class DashBoardController {
         });
     }
 
-    private void populateTodayDashboard(LocalDate date){
+    private void populateTodayDashboard(LocalDate date) {
         populateMiscellaneousPaymentsTable(date);
         populateStockArrivalTableView(date);
         populateSalesRecordTableView(date);
         populateBankPaymentsTableView(date);
     }
 
-    private void populateBankPaymentsTableView(LocalDate date){
+    private void populateBankPaymentsTableView(LocalDate date) {
         ObservableList<OnlinePayment> onlinePayments = DatabaseOperations.getTodayOnlinePayments(date);
         onlinePaymentsTableView.setItems(onlinePayments);
     }
-    private void populateSalesRecordTableView(LocalDate date){
+
+    private void populateSalesRecordTableView(LocalDate date) {
         ObservableList<SalesRecord> salesRecords = DatabaseOperations.getTodaySales(date);
         salesTableView.setItems(salesRecords);
     }
-    private void populateStockArrivalTableView(LocalDate date){
+
+    private void populateStockArrivalTableView(LocalDate date) {
         ObservableList<StockArrivalRecord> stockArrivalRecords = DatabaseOperations.getTodayStockArrivals(date);
         stockArrivalsTableView.setItems(stockArrivalRecords);
     }
 
-    private void populateMiscellaneousPaymentsTable(LocalDate date){
+    private void populateMiscellaneousPaymentsTable(LocalDate date) {
         ObservableList<MiscellaneousPayments> miscellaneousPayments = DatabaseOperations.getAllMiscellaneousPayments(date);
         miscellaneousPaymentsTableView.setItems(miscellaneousPayments);
     }
@@ -254,7 +256,7 @@ public class DashBoardController {
     }
 
     @FXML
-    void onStockDepletionMenuItem(){
+    void onStockDepletionMenuItem() {
         StockDepletion stockDepletion = new StockDepletion();
         Stage stage = new Stage();
         try {
@@ -265,7 +267,7 @@ public class DashBoardController {
     }
 
     @FXML
-    void onCustomerReportMenuItem(){
+    void onCustomerReportMenuItem() {
         DebitCredit customerReport = new DebitCredit();
         Stage stage = new Stage();
         try {
@@ -276,28 +278,29 @@ public class DashBoardController {
     }
 
     @FXML
-    void onCompanyReportMenuItem(){
+    void onCompanyReportMenuItem() {
         CompanyTransaction companyTransaction = new CompanyTransaction();
         Stage stage = new Stage();
-        try{
+        try {
             companyTransaction.start(stage);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @FXML
-    void onCompanyDailyReportMenuItem(){
+    void onCompanyDailyReportMenuItem() {
         DailyReport dailyReport = new DailyReport();
         Stage stage = new Stage();
-        try{
+        try {
             dailyReport.start(stage);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     @FXML
-    void onBackupDatabaseMenuItem(){
+    void onBackupDatabaseMenuItem() {
         DatabaseBackup.backupDatabase();
     }
 
@@ -313,12 +316,34 @@ public class DashBoardController {
     }
 
     @FXML
-    void onInterBankFundTransfer(){
+    void onInterBankFundTransfer() {
         InterBankFundTransfer interBankFundTransfer = new InterBankFundTransfer();
         Stage stage = new Stage();
-        try{
+        try {
             interBankFundTransfer.start(stage);
-        }catch (Exception e){
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    void onStockReturn() {
+        StockReturn stockReturn = new StockReturn();
+        Stage stage = new Stage();
+        try {
+            stockReturn.start(stage);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    void onProductReportMenuItem(){
+        StockLedger stockLedger = new StockLedger();
+        Stage stage = new Stage();
+        try {
+            stockLedger.start(stage);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
